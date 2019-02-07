@@ -29,17 +29,15 @@ public class AsyncPacketThread extends Thread {
 	protocolManager = ProtocolLibrary.getProtocolManager();
 	for (;;) {
 	    try {
-		Iterator<? extends Player> localIterator = Bukkit.getServer().getOnlinePlayers().iterator();
-		Player player = (Player) localIterator.next();
-		PacketContainer keepAlivePacket = protocolManager.
-			createPacket(PacketType.Play.Server.KEEP_ALIVE);
-		try {
-		    protocolManager.sendServerPacket(player, keepAlivePacket);
-		} catch (InvocationTargetException e) {
-		    throw new RuntimeException("Cannot send packet " + keepAlivePacket, e);
-		}
-		if (localIterator.hasNext()) {
-		    continue;
+		Iterator<?> localIterator = Bukkit.getServer().getOnlinePlayers().iterator();
+		while (localIterator.hasNext()) {
+		    Player player = (Player) localIterator.next();
+		    PacketContainer keepAlivePacket = protocolManager.createPacket(PacketType.Play.Server.KEEP_ALIVE);
+		    try {
+			protocolManager.sendServerPacket(player, keepAlivePacket);
+		    } catch (InvocationTargetException e) {
+			throw new RuntimeException("Cannot send packet " + keepAlivePacket, e);
+		    }
 		}
 	    } catch (Throwable t) {
 		t.printStackTrace();
