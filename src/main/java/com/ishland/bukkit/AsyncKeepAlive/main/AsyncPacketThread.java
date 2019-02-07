@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ishland.bukkit.AsyncKeepAlive.AsyncKeepAlive;
+package com.ishland.bukkit.AsyncKeepAlive.main;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Iterator;

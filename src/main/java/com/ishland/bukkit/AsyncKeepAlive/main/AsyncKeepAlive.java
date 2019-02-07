@@ -2,7 +2,7 @@
  * 
  */
 
-package com.ishland.bukkit.AsyncKeepAlive.AsyncKeepAlive;
+package com.ishland.bukkit.AsyncKeepAlive.main;
 
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
