@@ -9,6 +9,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.junit.rules.Timeout;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -20,12 +21,14 @@ import com.comphenix.protocol.events.PacketContainer;
  *
  */
 public class AsyncPacketThread extends Thread {
+    public static Timeout main;
+    private ProtocolManager protocolManager;
+
     public AsyncPacketThread() {
 	setDaemon(true);
     }
 
     public void run() {
-	ProtocolManager protocolManager;
 	protocolManager = ProtocolLibrary.getProtocolManager();
 	for (;;) {
 	    try {
