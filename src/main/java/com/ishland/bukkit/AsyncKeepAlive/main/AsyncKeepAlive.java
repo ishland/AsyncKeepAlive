@@ -48,17 +48,16 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 	try {
 	    new AsyncPacketThread().start();
 	    protocolManager.addPacketListener(
-		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
+		    new PacketAdapter(this, ListenerPriority.LOWEST, PacketType.Play.Client.KEEP_ALIVE) {
 			@Override
 			public void onPacketReceiving(PacketEvent e) {
                             try {
 			        PacketContainer keepAlivePacket = e.getPacket();
                                 StructureModifier<Long> packetData = keepAlivePacket.getLongs();
-                                int packetValue = Integer.parseInt(String.valueOf(packetData.readSafely(0)));
-                                getLogger().finer("Got keepalive");
-                                if(packetValue == -5000) {
+                                Long packetValue = packetData.readSafely(0);
+                                getLogger().finer("Got keepalive " + String.valueOf(packetValue));
+                                if(packetValue == 0L) {
                                     e.setCancelled(true);
-                                    getLogger().finer("Got custom keepalive");
                                 }
                             } catch (Throwable t) {
                                 getLogger().warning("Caught a exception");
