@@ -19,6 +19,8 @@ import com.comphenix.protocol.ProtocolManager;
 import com.comphenix.protocol.events.ListenerPriority;
 import com.comphenix.protocol.events.PacketAdapter;
 import com.comphenix.protocol.events.PacketEvent;
+import com.comphenix.protocol.events.PacketContainer;
+import com.comphenix.protocol.reflect.StructureModifier;
 
 /**
  * @author ishland
@@ -49,10 +51,18 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
 			@Override
 			public void onPacketReceiving(PacketEvent e) {
-			    PacketContainer keepAlivePacket = e.getPacket();
-                            if(keepAlivePacket.getLongs() == -5000) {
-                                e.setCancelled(true);
-                                getLogger().finer("Got custom keepalive");
+                            try {
+			        PacketContainer keepAlivePacket = e.getPacket();
+                                StructureModifier<Long> packetData = keepAlivePacket.getLongs();
+                                int packetValue = Integer.parseInt(String.valueOf(packetData.readSafely(0)));
+                                getLogger().finer("Got keepalive");
+                                if(packetValue == -5000) {
+                                    e.setCancelled(true);
+                                    getLogger().finer("Got custom keepalive");
+                                }
+                            } catch (Throwable t) {
+                                getLogger().warning("Caught a exception");
+                                t.printStackTrace();
                             }
 			}
 		    });
