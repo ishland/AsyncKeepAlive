@@ -10,3 +10,4 @@ AsyncKeepAlive is a plugin that keep the players' connections alive
 
 # Tested versions
 - Paperspigot 1.13.2 with ProtocolLib 4.4.0
+
