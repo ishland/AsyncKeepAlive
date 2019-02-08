@@ -1,3 +1,4 @@
+
 /**
  * 
  */
@@ -36,8 +37,10 @@ public class AsyncPacketThread extends Thread {
 		while (localIterator.hasNext()) {
 		    Player player = (Player) localIterator.next();
 		    PacketContainer keepAlivePacket = protocolManager.createPacket(PacketType.Play.Server.KEEP_ALIVE);
+                    keepAlivePacket.setMeta("Keep Alive ID", -5000);
 		    try {
 			protocolManager.sendServerPacket(player, keepAlivePacket);
+                        // getLogger().finer("Sent custom keepalive");
 		    } catch (InvocationTargetException e) {
 			throw new RuntimeException("Cannot send packet " + keepAlivePacket, e);
 		    }

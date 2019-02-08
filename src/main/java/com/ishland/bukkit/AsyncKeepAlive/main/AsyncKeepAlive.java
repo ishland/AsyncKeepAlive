@@ -46,16 +46,14 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 	try {
 	    new AsyncPacketThread().start();
 	    protocolManager.addPacketListener(
-		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Server.KICK_DISCONNECT) {
+		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
 			@Override
-			public void onPacketSending(PacketEvent e) {
-			    e.setCancelled(true);
-			    if (e.getPacketType() == PacketType.Play.Server.KICK_DISCONNECT) {
-				if (inTimeout.contains(e.getPlayer().getUniqueId())) {
-				    Bukkit.broadcastMessage("yep");
-				    e.setCancelled(true);
-				}
-			    }
+			public void onPacketReceiving(PacketEvent e) {
+			    PacketContainer keepAlivePacket = e.getPacket();
+                            if(keepAlivePacket.getLongs() == -5000) {
+                                e.setCancelled(true);
+                                getLogger().finer("Got custom keepalive");
+                            }
 			}
 		    });
 	} catch (Throwable t) {
