@@ -12,6 +12,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.rules.Timeout;
+import org.bstats.bukkit.Metrics;
 
 import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
@@ -38,6 +39,7 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 
     @Override
     public void onEnable() {
+	Metrics metrics = new Metrics(this);
 	protocolManager = ProtocolLibrary.getProtocolManager();
 	getLogger().info("AsyncKeepAlive by ishland");
 	if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
@@ -55,7 +57,7 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 			        PacketContainer keepAlivePacket = e.getPacket();
                                 StructureModifier<Long> packetData = keepAlivePacket.getLongs();
                                 Long packetValue = packetData.readSafely(0);
-                                getLogger().finer("Got keepalive " + String.valueOf(packetValue));
+                                getLogger().fine("Got keepalive " + String.valueOf(packetValue));
                                 if(packetValue == 0L) {
                                     e.setCancelled(true);
                                 }
@@ -69,12 +71,12 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 	    t.printStackTrace();
 	    getServer().getPluginManager().disablePlugin(this);
 	}
-	getLogger().info("AsyncKeepAlive 0.0.1 is now Enabled!");
+	getLogger().info("AsyncKeepAlive 0.-SNAPSHOT is now Enabled!");
     }
 
     @Override
     public void onDisable() {
 	getLogger().warning("Current version of AsyncKeepAlive cannot be disabled completely.");
-	getLogger().info("AsyncKeepAlive 0.0.1 is now Disabled!");
+	getLogger().info("AsyncKeepAlive 0.1-SNAPSHOT is now Disabled!");
     }
 }
