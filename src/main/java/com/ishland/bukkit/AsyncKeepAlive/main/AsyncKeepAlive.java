@@ -7,6 +7,8 @@ package com.ishland.bukkit.AsyncKeepAlive.main;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.Listener;
@@ -40,6 +42,22 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 	Metrics metrics = new Metrics(this);
+        metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
+        Map<String, Map<String, Integer>> map = new HashMap<>();
+        String javaVersion = System.getProperty("java.version");
+        Map<String, Integer> entry = new HashMap<>();
+        entry.put(javaVersion, 1);
+        if (javaVersion.startsWith("1.7")) {
+            map.put("Java 1.7", entry);
+        } else if (javaVersion.startsWith("1.8")) {
+            map.put("Java 1.8", entry);
+        } else if (javaVersion.startsWith("1.9")) {
+            map.put("Java 1.9", entry);
+        } else {
+            map.put("Other", entry);
+        }
+        return map;
+    }));
 	protocolManager = ProtocolLibrary.getProtocolManager();
 	getLogger().info("AsyncKeepAlive by ishland");
 	if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
