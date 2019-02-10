@@ -49,10 +49,12 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 	    getServer().getPluginManager().disablePlugin(this);
 	    return;
 	}
+	if (!(Bukkit.getVersion().equals("1.13.2") || Bukkit.getVersion().equals("1.12.2")))
+		getLogger().warning("Minecraft " + Bukkit.getVersion() + " hasn't been tested yet!");
 	try {
 	    new AsyncPacketThread().start();
 	    protocolManager.addPacketListener(
-		    new PacketAdapter(this, ListenerPriority.LOWEST, PacketType.Play.Client.KEEP_ALIVE) {
+		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
 			@Override
 			public void onPacketReceiving(PacketEvent e) {
                             try {
