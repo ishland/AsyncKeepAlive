@@ -74,13 +74,13 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 	    t.printStackTrace();
 	    getServer().getPluginManager().disablePlugin(this);
 	}
-	getLogger().info("AsyncKeepAlive 0.1 is now Enabled!");
+	getLogger().info("AsyncKeepAlive 0.2-SNAPSHOT is now Enabled!");
     }
 
     @Override
     public void onDisable() {
 	getLogger().warning("Current version of AsyncKeepAlive cannot be disabled completely.");
-	getLogger().info("AsyncKeepAlive 0.1 is now Disabled!");
+	getLogger().info("AsyncKeepAlive 0.2-SNAPSHOT is now Disabled!");
     }
 
     public Metrics getMetrics() {
