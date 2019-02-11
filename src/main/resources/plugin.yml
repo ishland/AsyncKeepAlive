@@ -1,6 +1,6 @@
 name: AsyncKeepAlive
 main: com.ishland.bukkit.AsyncKeepAlive.main.AsyncKeepAlive
-version: 0.1-SNAPSHOT
+version: 0.1
 author: ishland
 description: AsyncKeepAlive is a plugin that keep the players' connections alive
 depend: [ProtocolLib]

@@ -39,7 +39,7 @@ public class AsyncPacketThread extends Thread {
 		    PacketContainer keepAlivePacket = protocolManager.createPacket(PacketType.Play.Server.KEEP_ALIVE);
 		    try {
 			protocolManager.sendServerPacket(player, keepAlivePacket);
-			// getLogger().finer("Sent custom keepalive");
+			// getLogger().fine("Sent custom keepalive");
 		    } catch (InvocationTargetException e) {
 			throw new RuntimeException("Cannot send packet " + keepAlivePacket, e);
 		    }
