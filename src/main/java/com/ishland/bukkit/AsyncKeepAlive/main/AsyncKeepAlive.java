@@ -10,26 +10,19 @@ import java.util.UUID;
 
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
-import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.junit.rules.Timeout;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.StructureModifier;
 
 /**
  * @author ishland
  *
  */
-public class AsyncKeepAlive extends JavaPlugin implements Listener {
+public class AsyncKeepAlive extends JavaPlugin {
     public static Timeout main;
-    private ProtocolManager protocolManager;
+    private AsyncReceiveThread ReceiveThread;
+    private AsyncPacketThread PacketThread;
 
     public static Timeout getInstance() {
 	return main;
@@ -41,7 +34,7 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
     @Override
     public void onEnable() {
 	setMetrics(new Metrics(this));
-	protocolManager = ProtocolLibrary.getProtocolManager();
+	ProtocolLibrary.getProtocolManager();
 	getLogger().info("AsyncKeepAlive by ishland");
 	if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
 	    getLogger().warning("You need ProtocolLib in order to use this plugin");
@@ -51,36 +44,11 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 	if (!(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.12")))
 	    getLogger().warning("Minecraft " + Bukkit.getVersion() + " hasn't been tested yet!");
 	try {
-	    new AsyncPacketThread().start();
-
-	    protocolManager.addPacketListener(
-		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
-			@Override
-			public void onPacketReceiving(PacketEvent e) {
-			    try {
-				PacketContainer keepAlivePacket = e.getPacket();
-				if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.12")) {
-				    StructureModifier<Long> packetData = keepAlivePacket.getLongs();
-				    Long packetValue = packetData.readSafely(0);
-				    getLogger().info("Got keepalive " + String.valueOf(packetValue));
-				    if (packetValue == 0L) {
-					e.setCancelled(true);
-				    }
-				} else {
-				    StructureModifier<Integer> packetData = keepAlivePacket.getIntegers();
-				    int packetValue = packetData.readSafely(0);
-				    getLogger().info("Got keepalive " + String.valueOf(packetValue));
-				    if (packetValue == 0L) {
-					e.setCancelled(true);
-				    }
-				}
-
-			    } catch (Throwable t) {
-				getLogger().warning("Caught a exception");
-				t.printStackTrace();
-			    }
-			}
-		    });
+	    setPacketThread(new AsyncPacketThread());
+	    getPacketThread().start();
+	    setReceiveThread(new AsyncReceiveThread());
+	    getReceiveThread().setPlugin(this);
+	    getReceiveThread().run();
 	} catch (Throwable t) {
 	    t.printStackTrace();
 	    getServer().getPluginManager().disablePlugin(this);
@@ -100,5 +68,21 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 
     public void setMetrics(Metrics metrics) {
 	this.metrics = metrics;
+    }
+
+    public AsyncReceiveThread getReceiveThread() {
+	return ReceiveThread;
+    }
+
+    public void setReceiveThread(AsyncReceiveThread receiveThread) {
+	ReceiveThread = receiveThread;
+    }
+
+    public AsyncPacketThread getPacketThread() {
+	return PacketThread;
+    }
+
+    public void setPacketThread(AsyncPacketThread packetThread) {
+	PacketThread = packetThread;
     }
 }
