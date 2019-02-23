@@ -10,6 +10,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.junit.rules.Timeout;
 
 import com.comphenix.protocol.PacketType;
@@ -24,6 +25,7 @@ import com.comphenix.protocol.events.PacketContainer;
 public class AsyncPacketThread extends Thread {
     public static Timeout main;
     private ProtocolManager protocolManager;
+    private Plugin plugin;
 
     public AsyncPacketThread() {
 	setDaemon(true);
@@ -31,6 +33,7 @@ public class AsyncPacketThread extends Thread {
 
     public void run() {
 	protocolManager = ProtocolLibrary.getProtocolManager();
+	getPlugin().getLogger().info("Packet thread started.");
 	for (;;) {
 	    try {
 		Iterator<?> localIterator = Bukkit.getServer().getOnlinePlayers().iterator();
@@ -39,7 +42,7 @@ public class AsyncPacketThread extends Thread {
 		    PacketContainer keepAlivePacket = protocolManager.createPacket(PacketType.Play.Server.KEEP_ALIVE);
 		    try {
 			protocolManager.sendServerPacket(player, keepAlivePacket);
-			System.out.println("Sent custom keepalive");
+			// System.out.println("Sent custom keepalive");
 		    } catch (InvocationTargetException e) {
 			throw new RuntimeException("Cannot send packet " + keepAlivePacket, e);
 		    }
@@ -52,5 +55,13 @@ public class AsyncPacketThread extends Thread {
 	    } catch (InterruptedException localInterruptedException) {
 	    }
 	}
+    }
+
+    public Plugin getPlugin() {
+	return plugin;
+    }
+
+    public void setPlugin(Plugin plugin) {
+	this.plugin = plugin;
     }
 }

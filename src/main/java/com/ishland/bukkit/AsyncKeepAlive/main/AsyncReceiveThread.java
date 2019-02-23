@@ -37,14 +37,14 @@ public class AsyncReceiveThread extends Thread implements Listener {
 				if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.12")) {
 				    StructureModifier<Long> packetData = keepAlivePacket.getLongs();
 				    Long packetValue = packetData.readSafely(0);
-				    System.out.println("Got keepalive " + String.valueOf(packetValue));
+				    // System.out.println("Got keepalive " + String.valueOf(packetValue));
 				    if (packetValue == 0L) {
 					e.setCancelled(true);
 				    }
 				} else {
 				    StructureModifier<Integer> packetData = keepAlivePacket.getIntegers();
 				    int packetValue = packetData.readSafely(0);
-				    System.out.println("Got keepalive " + String.valueOf(packetValue));
+				    // System.out.println("Got keepalive " + String.valueOf(packetValue));
 				    if (packetValue == 0L) {
 					e.setCancelled(true);
 				    }
@@ -57,6 +57,7 @@ public class AsyncReceiveThread extends Thread implements Listener {
 			}
 		    }
 		});
+	getPlugin().getLogger().info("Receive thread started.");
     }
 
     public Plugin getPlugin() {

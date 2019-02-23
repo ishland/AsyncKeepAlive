@@ -41,10 +41,12 @@ public class AsyncKeepAlive extends JavaPlugin {
 	    getServer().getPluginManager().disablePlugin(this);
 	    return;
 	}
-	if (!(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.12")))
+	if (!(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.12")
+		|| Bukkit.getVersion().contains("1.11")))
 	    getLogger().warning("Minecraft " + Bukkit.getVersion() + " hasn't been tested yet!");
 	try {
 	    setPacketThread(new AsyncPacketThread());
+	    getPacketThread().setPlugin(this);
 	    getPacketThread().start();
 	    setReceiveThread(new AsyncReceiveThread());
 	    getReceiveThread().setPlugin(this);
@@ -53,13 +55,13 @@ public class AsyncKeepAlive extends JavaPlugin {
 	    t.printStackTrace();
 	    getServer().getPluginManager().disablePlugin(this);
 	}
-	getLogger().info("AsyncKeepAlive 0.2-SNAPSHOT is now Enabled!");
+	getLogger().info("AsyncKeepAlive 0.2 is now Enabled!");
     }
 
     @Override
     public void onDisable() {
 	getLogger().warning("Current version of AsyncKeepAlive cannot be disabled completely.");
-	getLogger().info("AsyncKeepAlive 0.2-SNAPSHOT is now Disabled!");
+	getLogger().info("AsyncKeepAlive 0.2 is now Disabled!");
     }
 
     public Metrics getMetrics() {
