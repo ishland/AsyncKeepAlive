@@ -89,6 +89,7 @@
 							</excludes>
 						</filter>
 					</filters>
+					<minimizeJar>true</minimizeJar>
 				</configuration>
 				<executions>
 					<execution>
