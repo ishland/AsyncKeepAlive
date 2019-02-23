@@ -49,7 +49,6 @@ public class AsyncReceiveThread extends Thread implements Listener {
 					e.setCancelled(true);
 				    }
 				}
-
 			    } catch (Throwable t) {
 				System.out.println("Caught a exception");
 				t.printStackTrace();
