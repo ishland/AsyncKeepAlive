@@ -52,24 +52,27 @@ public class AsyncKeepAlive extends JavaPlugin implements Listener {
 	    getLogger().warning("Minecraft " + Bukkit.getVersion() + " hasn't been tested yet!");
 	try {
 	    new AsyncPacketThread().start();
-	    protocolManager.addPacketListener(
-		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
-			@Override
-			public void onPacketReceiving(PacketEvent e) {
-			    try {
-				PacketContainer keepAlivePacket = e.getPacket();
-				StructureModifier<Long> packetData = keepAlivePacket.getLongs();
-				Long packetValue = packetData.readSafely(0);
-				getLogger().fine("Got keepalive " + String.valueOf(packetValue));
-				if (packetValue == 0L) {
-				    e.setCancelled(true);
+	    if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.12"))
+		protocolManager.addPacketListener(
+			new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
+			    @Override
+			    public void onPacketReceiving(PacketEvent e) {
+				try {
+				    PacketContainer keepAlivePacket = e.getPacket();
+				    StructureModifier<Long> packetData = keepAlivePacket.getLongs();
+				    Long packetValue = packetData.readSafely(0);
+				    getLogger().fine("Got keepalive " + String.valueOf(packetValue));
+				    if (packetValue == 0L) {
+					e.setCancelled(true);
+				    }
+				} catch (Throwable t) {
+				    getLogger().warning("Caught a exception");
+				    t.printStackTrace();
 				}
-			    } catch (Throwable t) {
-				getLogger().warning("Caught a exception");
-				t.printStackTrace();
 			    }
-			}
-		    });
+			});
+	    else
+		getLogger().info("Minecraft version before 1.12 detected. Packet Listener disabled.");
 	} catch (Throwable t) {
 	    t.printStackTrace();
 	    getServer().getPluginManager().disablePlugin(this);
