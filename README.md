@@ -16,8 +16,7 @@ This is a plugin that reduce the probability of disconnects
 - The server itself will send a KeepAlive to all clients every 20 seconds. The client must reply to the heartbeat packet within 30 seconds. Otherwise, the server is offline and the connection is displayed as dropped. If the server suddenly gets stuck, it will inevitably cause some players to disconnect. If It stucks more than 20 seconds, all the players will be disconnected. Because the heartbeat packet is sent in the main thread in a synchronous manner, the low TPS will cause the packet to be sent. Speed and response speed are slowing down. This plugin opens up a new asynchronous thread (not affected by TPS) and sends a heartbeat packet every 4 seconds, thus reducing the probability of players falling offline due to poor network conditions and low server TPS and instant card conditions.
 
 ## This plugin uses bStats.
-- bStats sends the following data:
-
+### bStats sends the following data:
 - Your server's randomly generated UUID
 - The amount of players on your server
 - The online mode of your server
@@ -30,12 +29,13 @@ This is a plugin that reduce the probability of disconnects
 - bStats-supported plugins
 - Plugin version of bStats-supported plugins
 
-- bStats page: https://bstats.org/plugin/bukkit/AsyncKeepAlive
+### bStats page: https://bstats.org/plugin/bukkit/AsyncKeepAlive
 
 # Tested versions
 - Paperspigot 1.13.2 with ProtocolLib 4.4.0
 - Paperspigot 1.12.2 with ProtocolLib 4.4.0
 - Paperspigot 1.11.2 with ProtocolLib 4.4.0
+- Bukkit 1.7.10 with ProtocolLib unknown by Chinese MCBBS 夜夜夜、
 
 # Known issues
 - Disabling this plugin cannot stop the asynchronous threads.
