@@ -25,9 +25,14 @@ public class AsyncPacketThread implements Runnable {
     private ProtocolManager protocolManager;
     private Plugin plugin;
     private boolean doStop = false;
+    private boolean debug = false;
 
     public void doStop() {
 	doStop = true;
+    }
+
+    public void doDebug() {
+	debug = true;
     }
 
     public void run() {
@@ -41,7 +46,8 @@ public class AsyncPacketThread implements Runnable {
 		    PacketContainer keepAlivePacket = protocolManager.createPacket(PacketType.Play.Server.KEEP_ALIVE);
 		    try {
 			protocolManager.sendServerPacket(player, keepAlivePacket);
-			// System.out.println("Sent custom keepalive");
+			if (debug)
+			    getPlugin().getLogger().info("[Debug] Sent extra keepalive");
 		    } catch (InvocationTargetException e) {
 			throw new RuntimeException("Cannot send packet " + keepAlivePacket, e);
 		    }
