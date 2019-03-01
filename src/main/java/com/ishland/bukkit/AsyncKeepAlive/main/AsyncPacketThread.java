@@ -47,7 +47,7 @@ public class AsyncPacketThread implements Runnable {
 		    try {
 			protocolManager.sendServerPacket(player, keepAlivePacket);
 			if (debug)
-			    getPlugin().getLogger().info("[Debug] Sent extra keepalive");
+			    getPlugin().getLogger().info("[Debug] Sent extra keepalive to " + player.getName());
 		    } catch (InvocationTargetException e) {
 			throw new RuntimeException("Cannot send packet " + keepAlivePacket, e);
 		    }

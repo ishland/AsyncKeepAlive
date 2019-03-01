@@ -61,20 +61,24 @@ public class AsyncKeepAlive extends JavaPlugin {
 					StructureModifier<Long> packetData = keepAlivePacket.getLongs();
 					Long packetValue = packetData.readSafely(0);
 					if (debug)
-					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue));
+					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue)
+						    + " from " + e.getPlayer());
 					if (packetValue == 0L) {
 					    if (debug)
-						getLogger().info("[Debug] Got plugin-sent keepalive");
+						getLogger().info(
+							"[Debug] Got plugin-sent keepalive from " + e.getPlayer());
 					    e.setCancelled(true);
 					}
 				    } else {
 					StructureModifier<Integer> packetData = keepAlivePacket.getIntegers();
 					int packetValue = packetData.readSafely(0);
 					if (debug)
-					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue));
+					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue)
+						    + " from " + e.getPlayer());
 					if (packetValue == 0L) {
 					    if (debug)
-						getLogger().info("[Debug] Got plugin-sent keepalive");
+						getLogger().info(
+							"[Debug] Got plugin-sent keepalive from " + e.getPlayer());
 					    e.setCancelled(true);
 					}
 				    }
