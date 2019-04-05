@@ -1,1 +1,4 @@
+# Using debug mode
 debug: false
+# KeepAlive frequency in miliseconds, it must be at least 1
+frequency: 4000

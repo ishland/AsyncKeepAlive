@@ -21,10 +21,12 @@ import com.comphenix.protocol.reflect.StructureModifier;
  * @author ishland
  *
  */
-public class AsyncKeepAlive extends JavaPlugin {
+public class Launcher extends JavaPlugin {
     private Runnable PacketThread;
     private FileConfiguration configuration;
     private boolean debug = false;
+    private long frequency = 4000;
+    private PlaceHolderMain PlaceHolder;
 
     private Metrics metrics;
 
@@ -33,6 +35,11 @@ public class AsyncKeepAlive extends JavaPlugin {
 	setMetrics(new Metrics(this));
 	getLogger().info("AsyncKeepAlive by ishland");
 	loadConfig();
+	if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+	    setPlaceHolder(new PlaceHolderMain());
+	    getPlaceHolder().setPacketThread(getPacketThread());
+	    getPlaceHolder().register();
+	}
 	if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
 	    getLogger().warning("You need ProtocolLib in order to use this plugin");
 	    getServer().getPluginManager().disablePlugin(this);
@@ -42,14 +49,15 @@ public class AsyncKeepAlive extends JavaPlugin {
 		|| Bukkit.getVersion().contains("1.11") || Bukkit.getVersion().contains("1.10")
 		|| Bukkit.getVersion().contains("1.7.10")))
 	    getLogger().warning("Minecraft " + Bukkit.getVersion() + " hasn't been tested yet!");
+
+	this.startPacketListener();
+	this.startSendingThread();
+
+	getLogger().info("AsyncKeepAlive 0.2.1-SNAPSHOT is now Enabled!");
+    }
+
+    protected void startPacketListener() {
 	try {
-	    setPacketThread(new AsyncPacketThread());
-	    ((AsyncPacketThread) getPacketThread()).setPlugin(this);
-	    if (debug)
-		((AsyncPacketThread) getPacketThread()).doDebug();
-	    Thread thread = new Thread(getPacketThread());
-	    thread.setName("AsyncKeepAlive-PacketThread");
-	    thread.start();
 	    ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(
 		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
 			@Override
@@ -63,10 +71,10 @@ public class AsyncKeepAlive extends JavaPlugin {
 					if (debug)
 					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue)
 						    + " from " + e.getPlayer());
-					if (packetValue == 0L) {
+					if (packetValue.longValue() + System.currentTimeMillis() > 60000) {
 					    if (debug)
-						getLogger().info(
-							"[Debug] Got plugin-sent keepalive from " + e.getPlayer());
+						getLogger().info("[Debug] Got plugin-sent keepalive from "
+							+ e.getPlayer().getName());
 					    e.setCancelled(true);
 					}
 				    } else {
@@ -74,7 +82,7 @@ public class AsyncKeepAlive extends JavaPlugin {
 					int packetValue = packetData.readSafely(0);
 					if (debug)
 					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue)
-						    + " from " + e.getPlayer());
+						    + " from " + e.getPlayer().getName());
 					if (packetValue == 0L) {
 					    if (debug)
 						getLogger().info(
@@ -95,7 +103,23 @@ public class AsyncKeepAlive extends JavaPlugin {
 	    getServer().getPluginManager().disablePlugin(this);
 	    return;
 	}
-	getLogger().info("AsyncKeepAlive 0.2.1-SNAPSHOT is now Enabled!");
+    }
+
+    protected void startSendingThread() {
+	try {
+	    setPacketThread(new AsyncPacketThread());
+	    ((AsyncPacketThread) getPacketThread()).setPlugin(this);
+	    if (debug)
+		((AsyncPacketThread) getPacketThread()).doDebug();
+	    ((AsyncPacketThread) getPacketThread()).setFrequency(frequency);
+	    Thread thread = new Thread(getPacketThread());
+	    thread.setName("AsyncKeepAlive-PacketThread");
+	    thread.start();
+	} catch (Throwable t) {
+	    t.printStackTrace();
+	    getServer().getPluginManager().disablePlugin(this);
+	    return;
+	}
     }
 
     @Override
@@ -112,6 +136,7 @@ public class AsyncKeepAlive extends JavaPlugin {
 	getConfiguration().options().copyDefaults(true);
 	if (getConfiguration().getBoolean("debug", false))
 	    doDebug();
+	this.frequency = getConfiguration().getLong("frequency");
 	getLogger().info("Configurations loaded!");
     }
 
@@ -148,6 +173,20 @@ public class AsyncKeepAlive extends JavaPlugin {
     public void doDebug() {
 	getLogger().info("Debug mode active.");
 	debug = true;
+    }
+
+    /**
+     * @return the placeHolder
+     */
+    public PlaceHolderMain getPlaceHolder() {
+	return PlaceHolder;
+    }
+
+    /**
+     * @param placeHolder the placeHolder to set
+     */
+    public void setPlaceHolder(PlaceHolderMain placeHolder) {
+	PlaceHolder = placeHolder;
     }
 
 }
