@@ -3,6 +3,8 @@
  */
 package com.ishland.bukkit.AsyncKeepAlive.main;
 
+import java.util.HashMap;
+
 import org.bukkit.OfflinePlayer;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
@@ -14,6 +16,8 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 public class PlaceHolderMain extends PlaceholderExpansion {
 
     private Runnable PacketThread;
+
+    public HashMap<String, Long> latency = new HashMap<>();
 
     @Override
     public boolean canRegister() {
@@ -50,7 +54,7 @@ public class PlaceHolderMain extends PlaceholderExpansion {
     public String onRequest(OfflinePlayer player, String identifier) {
 
 	if (identifier.equals("ping")) {
-	    return "ping works";
+	    return latency.containsKey(player.getName()) ? String.valueOf(latency.get(player.getName())) : "-1";
 	}
 
 	// We return null if an invalid placeholder

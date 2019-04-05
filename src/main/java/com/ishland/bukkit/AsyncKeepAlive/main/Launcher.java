@@ -70,8 +70,10 @@ public class Launcher extends JavaPlugin {
 					Long packetValue = packetData.readSafely(0);
 					if (debug)
 					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue)
-						    + " from " + e.getPlayer());
+						    + " from " + e.getPlayer().getName());
 					if (packetValue.longValue() + System.currentTimeMillis() > 60000) {
+					    PlaceHolder.latency.put(e.getPlayer().getName(),
+						    Long.valueOf(packetValue.longValue() + System.currentTimeMillis()));
 					    if (debug)
 						getLogger().info("[Debug] Got plugin-sent keepalive from "
 							+ e.getPlayer().getName());
