@@ -15,8 +15,6 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
  */
 public class PlaceHolderMain extends PlaceholderExpansion {
 
-    private Runnable PacketThread;
-
     public HashMap<String, Long> latency = new HashMap<>();
 
     @Override
@@ -36,7 +34,7 @@ public class PlaceHolderMain extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-	return "0.2.1-SNAPSHOT";
+	return "0.3-SNAPSHOT";
     }
 
     /**
@@ -60,20 +58,6 @@ public class PlaceHolderMain extends PlaceholderExpansion {
 	// We return null if an invalid placeholder
 	// was provided
 	return null;
-    }
-
-    /**
-     * @return the packetThread
-     */
-    public Runnable getPacketThread() {
-	return PacketThread;
-    }
-
-    /**
-     * @param packetThread the packetThread to set
-     */
-    public void setPacketThread(Runnable packetThread) {
-	PacketThread = packetThread;
     }
 
 }

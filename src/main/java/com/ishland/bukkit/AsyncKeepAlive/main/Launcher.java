@@ -9,26 +9,22 @@ import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import com.comphenix.protocol.PacketType;
 import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.events.ListenerPriority;
-import com.comphenix.protocol.events.PacketAdapter;
-import com.comphenix.protocol.events.PacketContainer;
-import com.comphenix.protocol.events.PacketEvent;
-import com.comphenix.protocol.reflect.StructureModifier;
+import com.ishland.bukkit.AsyncKeepAlive.launcher.LauncherForPacketListener;
+import com.ishland.bukkit.AsyncKeepAlive.launcher.LauncherForPacketThread;
 
 /**
  * @author ishland
  *
  */
 public class Launcher extends JavaPlugin {
-    private Runnable PacketThread;
     private FileConfiguration configuration;
     private boolean debug = false;
     private long frequency = 4000;
     private PlaceHolderMain PlaceHolder;
-
     private Metrics metrics;
+    private LauncherForPacketThread packetThread;
+    private LauncherForPacketListener packetListener;
 
     @Override
     public void onEnable() {
@@ -37,7 +33,6 @@ public class Launcher extends JavaPlugin {
 	loadConfig();
 	if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 	    setPlaceHolder(new PlaceHolderMain());
-	    getPlaceHolder().setPacketThread(getPacketThread());
 	    getPlaceHolder().register();
 	}
 	if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
@@ -50,85 +45,27 @@ public class Launcher extends JavaPlugin {
 		|| Bukkit.getVersion().contains("1.7.10")))
 	    getLogger().warning("Minecraft " + Bukkit.getVersion() + " hasn't been tested yet!");
 
-	this.startPacketListener();
 	this.startSendingThread();
+	this.startPacketListener();
 
-	getLogger().info("AsyncKeepAlive 0.2.1-SNAPSHOT is now Enabled!");
-    }
-
-    protected void startPacketListener() {
-	try {
-	    ProtocolLibrary.getProtocolManager().getAsynchronousManager().registerAsyncHandler(
-		    new PacketAdapter(this, ListenerPriority.HIGHEST, PacketType.Play.Client.KEEP_ALIVE) {
-			@Override
-			public void onPacketReceiving(PacketEvent e) {
-			    if (e.getPacketType() == PacketType.Play.Client.KEEP_ALIVE) {
-				try {
-				    PacketContainer keepAlivePacket = e.getPacket();
-				    if (Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.12")) {
-					StructureModifier<Long> packetData = keepAlivePacket.getLongs();
-					Long packetValue = packetData.readSafely(0);
-					if (debug)
-					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue)
-						    + " from " + e.getPlayer().getName());
-					if (packetValue.longValue() + System.currentTimeMillis() > 60000) {
-					    PlaceHolder.latency.put(e.getPlayer().getName(),
-						    Long.valueOf(packetValue.longValue() + System.currentTimeMillis()));
-					    if (debug)
-						getLogger().info("[Debug] Got plugin-sent keepalive from "
-							+ e.getPlayer().getName());
-					    e.setCancelled(true);
-					}
-				    } else {
-					StructureModifier<Integer> packetData = keepAlivePacket.getIntegers();
-					int packetValue = packetData.readSafely(0);
-					if (debug)
-					    getLogger().info("[Debug] Got keepalive " + String.valueOf(packetValue)
-						    + " from " + e.getPlayer().getName());
-					if (packetValue == 0L) {
-					    if (debug)
-						getLogger().info(
-							"[Debug] Got plugin-sent keepalive from " + e.getPlayer());
-					    e.setCancelled(true);
-					}
-				    }
-				} catch (Throwable t) {
-				    System.out.println("Caught a exception");
-				    System.out.println(t.getMessage());
-				    t.printStackTrace();
-				}
-			    }
-			}
-		    }).start();
-	} catch (Throwable t) {
-	    t.printStackTrace();
-	    getServer().getPluginManager().disablePlugin(this);
-	    return;
-	}
+	getLogger().info("AsyncKeepAlive 0.3-SNAPSHOT is now Enabled!");
     }
 
     protected void startSendingThread() {
-	try {
-	    setPacketThread(new AsyncPacketThread());
-	    ((AsyncPacketThread) getPacketThread()).setPlugin(this);
-	    if (debug)
-		((AsyncPacketThread) getPacketThread()).doDebug();
-	    ((AsyncPacketThread) getPacketThread()).setFrequency(frequency);
-	    Thread thread = new Thread(getPacketThread());
-	    thread.setName("AsyncKeepAlive-PacketThread");
-	    thread.start();
-	} catch (Throwable t) {
-	    t.printStackTrace();
-	    getServer().getPluginManager().disablePlugin(this);
-	    return;
-	}
+	setPacketThread(new LauncherForPacketThread());
+	getPacketThread().launch(this, debug);
+    }
+
+    protected void startPacketListener() {
+	setPacketListener(new LauncherForPacketListener());
+	getPacketListener().register(this, debug, packetThread.getObject(), PlaceHolder);
     }
 
     @Override
     public void onDisable() {
 	ProtocolLibrary.getProtocolManager().removePacketListeners(this);
-	((AsyncPacketThread) getPacketThread()).doStop();
-	getLogger().info("AsyncKeepAlive 0.2.1-SNAPSHOT is now Disabled!");
+	getPacketThread().getObject().doStop();
+	getLogger().info("AsyncKeepAlive 0.3-SNAPSHOT is now Disabled!");
     }
 
     protected void loadConfig() {
@@ -136,8 +73,7 @@ public class Launcher extends JavaPlugin {
 	this.saveDefaultConfig();
 	setConfiguration(this.getConfig());
 	getConfiguration().options().copyDefaults(true);
-	if (getConfiguration().getBoolean("debug", false))
-	    doDebug();
+	this.debug = getConfiguration().getBoolean("debug", false);
 	this.frequency = getConfiguration().getLong("frequency");
 	getLogger().info("Configurations loaded!");
     }
@@ -148,14 +84,6 @@ public class Launcher extends JavaPlugin {
 
     public void setMetrics(Metrics metrics) {
 	this.metrics = metrics;
-    }
-
-    public Runnable getPacketThread() {
-	return PacketThread;
-    }
-
-    public void setPacketThread(Runnable packetThread) {
-	PacketThread = packetThread;
     }
 
     /**
@@ -172,11 +100,6 @@ public class Launcher extends JavaPlugin {
 	this.configuration = configuration;
     }
 
-    public void doDebug() {
-	getLogger().info("Debug mode active.");
-	debug = true;
-    }
-
     /**
      * @return the placeHolder
      */
@@ -189,6 +112,34 @@ public class Launcher extends JavaPlugin {
      */
     public void setPlaceHolder(PlaceHolderMain placeHolder) {
 	PlaceHolder = placeHolder;
+    }
+
+    /**
+     * @return the packetThread
+     */
+    public LauncherForPacketThread getPacketThread() {
+	return packetThread;
+    }
+
+    /**
+     * @param packetThread the packetThread to set
+     */
+    public void setPacketThread(LauncherForPacketThread packetThread) {
+	this.packetThread = packetThread;
+    }
+
+    /**
+     * @return the packetListener
+     */
+    public LauncherForPacketListener getPacketListener() {
+	return packetListener;
+    }
+
+    /**
+     * @param packetListener the packetListener to set
+     */
+    public void setPacketListener(LauncherForPacketListener packetListener) {
+	this.packetListener = packetListener;
     }
 
 }
