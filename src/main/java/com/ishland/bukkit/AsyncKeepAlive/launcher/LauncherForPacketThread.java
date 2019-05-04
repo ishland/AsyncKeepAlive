@@ -11,7 +11,7 @@ public class LauncherForPacketThread {
     protected Runnable object;
     protected Thread thread;
 
-    public void launch(Plugin plugin, boolean debug) {
+    public void launch(Plugin plugin, boolean debug, long freq) {
 	if (Bukkit.getVersion().contains("1.7") || Bukkit.getVersion().contains("1.8")
 		|| Bukkit.getVersion().contains("1.9") || Bukkit.getVersion().contains("1.10")
 		|| Bukkit.getVersion().contains("1.11")) {
@@ -23,6 +23,7 @@ public class LauncherForPacketThread {
 	if (debug)
 	    ((AsyncPacketThread) this.object).doDebug();
 	((AsyncPacketThread) this.object).setPlugin(plugin);
+	((AsyncPacketThread) this.object).setFrequency(freq);
 	this.thread = new Thread(this.object);
 	this.thread.setDaemon(true);
 	this.thread.setName("AsyncPacketThread");

@@ -4,6 +4,10 @@
 
 package com.ishland.bukkit.AsyncKeepAlive.main;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.Callable;
+
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
@@ -28,9 +32,9 @@ public class Launcher extends JavaPlugin {
 
     @Override
     public void onEnable() {
-	setMetrics(new Metrics(this));
 	getLogger().info("AsyncKeepAlive by ishland");
 	loadConfig();
+	startMetric();
 	if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 	    setPlaceHolder(new PlaceHolderMain());
 	    getPlaceHolder().register();
@@ -51,9 +55,50 @@ public class Launcher extends JavaPlugin {
 	getLogger().info("AsyncKeepAlive 0.3-SNAPSHOT is now Enabled!");
     }
 
+    @SuppressWarnings("unchecked")
+    protected void startMetric() {
+	setMetrics(new Metrics(this));
+	long freq = this.frequency;
+	String result;
+	if (freq % 1000 == 0 && freq >= 1000) {
+	    result = String.valueOf(freq - 999) + " - " + String.valueOf(freq);
+	} else {
+	    result = String.valueOf((long) (freq / 1000) * 1000) + " - "
+		    + String.valueOf((long) ((freq / 1000) + 1) * 1000);
+	}
+	getLogger().info("Frequency: " + String.valueOf(freq));
+	getLogger().info("Frequency: " + result);
+	getMetrics().addCustomChart(new Metrics.DrilldownPie("keepalive_frequency",
+		(Callable<Map<String, Map<String, Integer>>>) this.metricFreq()));
+
+    }
+
+    // Java 7 support!
+    protected Callable<?> metricFreq() {
+	return new Callable<Object>() {
+	    @Override
+	    public Map<String, Map<String, Integer>> call() throws Exception {
+		Map<String, Map<String, Integer>> map = new HashMap<>();
+		Long freq = frequency;
+		String result;
+		Map<String, Integer> entry = new HashMap<>();
+		entry.put(String.valueOf(freq), 1);
+		if (freq.longValue() % 1000 == 0 && freq.longValue() >= 1000) {
+		    result = String.valueOf(freq.longValue() - 999) + " - " + String.valueOf(freq);
+		} else {
+		    result = String.valueOf((long) (freq.longValue() / 1000) * 1000) + " - "
+			    + String.valueOf((long) ((freq.longValue() / 1000) + 1) * 1000);
+		}
+		map.put(result, entry);
+		return map;
+	    }
+
+	};
+    }
+
     protected void startSendingThread() {
 	setPacketThread(new LauncherForPacketThread());
-	getPacketThread().launch(this, debug);
+	getPacketThread().launch(this, debug, frequency);
     }
 
     protected void startPacketListener() {
@@ -75,6 +120,10 @@ public class Launcher extends JavaPlugin {
 	getConfiguration().options().copyDefaults(true);
 	this.debug = getConfiguration().getBoolean("debug", false);
 	this.frequency = getConfiguration().getLong("frequency");
+	if (this.frequency < 1) {
+	    getLogger().warning("Invaild frequency! Setting it to 1000");
+	    this.frequency = 1000;
+	}
 	getLogger().info("Configurations loaded!");
     }
 

@@ -60,8 +60,8 @@ public class AsyncPacketThread {
 	getPlugin().getDescription().getVersion();
 	getPlugin().getLogger().info("Packet thread started.");
 
-	timer.schedule(mainloop, 1000, 1000);
-	timer.schedule(stopCheck, 1000, this.frequency);
+	timer.schedule(mainloop, 1000, this.frequency);
+	timer.schedule(stopCheck, 1000, 500);
     }
 
     public Plugin getPlugin() {
