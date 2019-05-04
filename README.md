@@ -6,7 +6,7 @@ This is a plugin that reduce the probability of disconnects
 # Compatibility
 - API Version: 1.13.2-R0.1-SNAPSHOT
 - Dependencies: ProtocolLib
-- Requirements: Java 8
+- Requirements: Java 7 or above
 
 # How it works
 - Open an asynchronous thread timing (every 4 seconds) to send a KeepAlive (heartbeat packet) to the online players, reducing the probability of players disconnect due to low TPS, instant stuck and network packet loss. This plugin can only reduce the probability of disconnects and cannot increase the network transmission speed.
@@ -38,7 +38,7 @@ This is a plugin that reduce the probability of disconnects
 - Bukkit 1.7.10 with ProtocolLib unknown by Chinese MCBBS 夜夜夜、
 
 # Known issues
-- Disabling this plugin cannot stop the asynchronous threads.
+No known issues now.
 
 # Development builds:
 https://ci.ishland.com/job/AsyncKeepAlive/ (Take the first jar)
