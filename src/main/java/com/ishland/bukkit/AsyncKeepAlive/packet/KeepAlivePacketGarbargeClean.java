@@ -25,6 +25,7 @@ public class KeepAlivePacketGarbargeClean extends TimerTask {
     @Override
     public void run() {
 	map.remove(key);
+	GCList.remove(index);
 	try {
 	    this.finalize();
 	} catch (Throwable e) {
