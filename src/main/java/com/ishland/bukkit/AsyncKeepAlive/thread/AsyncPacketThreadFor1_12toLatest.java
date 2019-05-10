@@ -17,9 +17,11 @@ public class AsyncPacketThreadFor1_12toLatest extends AsyncPacketThread implemen
 			KeepAlivePacket packet = new KeepAlivePacketFor1_12toLatest(getPlugin());
 			packet.boardcast();
 			getPing().put(packet.getBody(), packet);
-			KeepAlivePacketGarbargeClean gc = new KeepAlivePacketGarbargeClean(getPing(), packet.getBody());
-			getTimer().schedule(gc, 30 * 1000);
-			getGarbargeCleanList().add(gc);
+			KeepAlivePacketGarbargeClean gc = new KeepAlivePacketGarbargeClean(getPing(), packet.getBody(),
+				getGarbargeCleanList(), index);
+			getTimer().schedule(gc, 60 * 1000);
+			getGarbargeCleanList().put(index, gc);
+			index++;
 			if (isDebug())
 			    getPlugin().getLogger().info("[Debug] Boardcasted plugin-sent keepalive");
 		    } catch (Throwable t) {

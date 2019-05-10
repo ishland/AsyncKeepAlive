@@ -6,10 +6,20 @@ import java.util.TimerTask;
 public class KeepAlivePacketGarbargeClean extends TimerTask {
     HashMap<Long, KeepAlivePacket> map;
     Long key;
+    HashMap<Long, KeepAlivePacketGarbargeClean> GCList;
+    Long index;
 
-    public KeepAlivePacketGarbargeClean(HashMap<Long, KeepAlivePacket> map, Long key) {
+    @Override
+    public void finalize() throws Throwable {
+	super.finalize();
+    }
+
+    public KeepAlivePacketGarbargeClean(HashMap<Long, KeepAlivePacket> map, Long key,
+	    HashMap<Long, KeepAlivePacketGarbargeClean> hashMap, Long index) {
 	this.map = map;
 	this.key = key;
+	this.GCList = hashMap;
+	this.index = index;
     }
 
     @Override

@@ -1,6 +1,5 @@
 package com.ishland.bukkit.AsyncKeepAlive.thread;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
@@ -19,7 +18,7 @@ public class AsyncPacketThread {
     private boolean debug = false;
     private long frequency = 4000;
     private HashMap<Long, KeepAlivePacket> ping = new HashMap<Long, KeepAlivePacket>();
-    private ArrayList<KeepAlivePacketGarbargeClean> garbargeCleanList = new ArrayList<KeepAlivePacketGarbargeClean>();
+    private HashMap<Long, KeepAlivePacketGarbargeClean> garbargeCleanList = new HashMap<Long, KeepAlivePacketGarbargeClean>();
     private Timer timer = new Timer();
     private TimerTask stopCheck = new TimerTask() {
 	public void run() {
@@ -27,6 +26,7 @@ public class AsyncPacketThread {
 	}
     };
     private TimerTask mainloop;
+    protected Long index = (long) 0;
 
     public void doStop() {
 	doStop = true;
@@ -50,11 +50,19 @@ public class AsyncPacketThread {
     }
 
     private void stopGCTasks() {
-	int size = getGarbargeCleanList().size();
-	getPlugin().getLogger().info("Stopping " + String.valueOf(size) + " GC tasks (including non-exists tasks)...");
-	for (int i = 0; i < size; i++)
-	    getGarbargeCleanList().get(i).cancel();
-	getGarbargeCleanList().clear();
+	getPlugin().getLogger().info("Stopping " + String.valueOf(getGarbargeCleanList().size())
+		+ " GC tasks (including non-exists tasks)...");
+	Iterator<Entry<Long, KeepAlivePacketGarbargeClean>> iterator = getGarbargeCleanList().entrySet().iterator();
+	while (iterator.hasNext()) {
+	    Entry<Long, KeepAlivePacketGarbargeClean> entry = iterator.next();
+	    if (entry.getValue() == null)
+		continue;
+	    try {
+		entry.getValue().finalize();
+	    } catch (Throwable e) {
+		getPlugin().getLogger().log(Level.SEVERE, "Error while finalizing keepAlivePacket", e);
+	    }
+	}
     }
 
     private void cleanPackets() {
@@ -147,7 +155,7 @@ public class AsyncPacketThread {
     /**
      * @return the garbargeCleanList
      */
-    public ArrayList<KeepAlivePacketGarbargeClean> getGarbargeCleanList() {
+    public HashMap<Long, KeepAlivePacketGarbargeClean> getGarbargeCleanList() {
 	return garbargeCleanList;
     }
 }
