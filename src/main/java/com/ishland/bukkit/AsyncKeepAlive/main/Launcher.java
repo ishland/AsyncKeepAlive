@@ -47,9 +47,9 @@ public class Launcher extends JavaPlugin {
 	    getServer().getPluginManager().disablePlugin(this);
 	    return;
 	}
-	if (!(Bukkit.getVersion().contains("1.13") || Bukkit.getVersion().contains("1.12")
-		|| Bukkit.getVersion().contains("1.11") || Bukkit.getVersion().contains("1.10")
-		|| Bukkit.getVersion().contains("1.7.10")))
+	if (!(Bukkit.getVersion().contains("1.14") || Bukkit.getVersion().contains("1.13")
+		|| Bukkit.getVersion().contains("1.12") || Bukkit.getVersion().contains("1.11")
+		|| Bukkit.getVersion().contains("1.10") || Bukkit.getVersion().contains("1.7.10")))
 	    getLogger().warning("Minecraft " + Bukkit.getVersion() + " hasn't been tested yet!");
 
 	this.startSendingThread();
