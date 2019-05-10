@@ -11,15 +11,16 @@ public class AsyncPacketThreadFor1_8to1_11 extends AsyncPacketThread implements 
 	setMainloop(new TimerTask() {
 	    @Override
 	    public void run() {
-		try {
-		    KeepAlivePacket packet = new KeepAlivePacketFor1_7to1_11(getPlugin());
-		    packet.boardcast();
-		    getPing().put(packet.getBody(), packet);
-		    if (isDebug())
-			getPlugin().getLogger().info("[Debug] Boardcasted plugin-sent keepalive");
-		} catch (Throwable t) {
-		    t.printStackTrace();
-		}
+		if (!getPlugin().getServer().getOnlinePlayers().isEmpty())
+		    try {
+			KeepAlivePacket packet = new KeepAlivePacketFor1_7to1_11(getPlugin());
+			packet.boardcast();
+			getPing().put(packet.getBody(), packet);
+			if (isDebug())
+			    getPlugin().getLogger().info("[Debug] Boardcasted plugin-sent keepalive");
+		    } catch (Throwable t) {
+			t.printStackTrace();
+		    }
 	    }
 	});
     }

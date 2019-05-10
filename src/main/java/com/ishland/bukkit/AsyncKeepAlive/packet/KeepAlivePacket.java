@@ -30,6 +30,11 @@ public class KeepAlivePacket {
 	this.state = 0;
     }
 
+    @Override
+    public void finalize() throws Throwable {
+	super.finalize();
+    }
+
     public void boardcast() throws Exception {
 	if (this.state == 0) {
 	    try {
@@ -66,7 +71,6 @@ public class KeepAlivePacket {
     }
 
     public long getBody() {
-	// TODO Auto-generated method stub
 	return 0;
     }
 

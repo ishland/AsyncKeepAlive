@@ -1,6 +1,9 @@
 package com.ishland.bukkit.AsyncKeepAlive.thread;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.logging.Level;
@@ -8,6 +11,7 @@ import java.util.logging.Level;
 import org.bukkit.plugin.Plugin;
 
 import com.ishland.bukkit.AsyncKeepAlive.packet.KeepAlivePacket;
+import com.ishland.bukkit.AsyncKeepAlive.packet.KeepAlivePacketGarbargeClean;
 
 public class AsyncPacketThread {
     private Plugin plugin;
@@ -15,6 +19,7 @@ public class AsyncPacketThread {
     private boolean debug = false;
     private long frequency = 4000;
     private HashMap<Long, KeepAlivePacket> ping = new HashMap<Long, KeepAlivePacket>();
+    private ArrayList<KeepAlivePacketGarbargeClean> garbargeCleanList = new ArrayList<KeepAlivePacketGarbargeClean>();
     private Timer timer = new Timer();
     private TimerTask stopCheck = new TimerTask() {
 	public void run() {
@@ -44,16 +49,46 @@ public class AsyncPacketThread {
 	    stoploop();
     }
 
+    private void stopGCTasks() {
+	getPlugin().getLogger().info("Stopping GC tasks...");
+	for (int i = 0; i < getGarbargeCleanList().size(); i++)
+	    getGarbargeCleanList().get(i).cancel();
+	getGarbargeCleanList().clear();
+    }
+
+    private void cleanPackets() {
+	getPlugin().getLogger().info("Cleaning up packets...");
+	Iterator<Entry<Long, KeepAlivePacket>> iterator = getPing().entrySet().iterator();
+	while (iterator.hasNext()) {
+	    Entry<Long, KeepAlivePacket> entry = iterator.next();
+	    if (entry.getValue() == null)
+		continue;
+	    try {
+		entry.getValue().finalize();
+	    } catch (Throwable e) {
+		getPlugin().getLogger().log(Level.SEVERE, "Error while finalizing keepAlivePacket", e);
+	    }
+	}
+    }
+
     private void stoploop() {
-	getPlugin().getLogger().info("Stopping Packet thread.");
+	long startTime = System.currentTimeMillis();
+	getPlugin().getLogger().info("Stopping Packet thread...");
+	getPlugin().getLogger().info("Note that if the stop task did not finish completely in time: ");
+	getPlugin().getLogger().info("If this is a shutdown, you can leave it alone");
+	getPlugin().getLogger().info("If this is a reload, it may cause extra cpu usage");
 	try {
+	    getPlugin().getLogger().info("Stopping loops...");
 	    mainloop.cancel();
 	    stopCheck.cancel();
+	    stopGCTasks();
+	    cleanPackets();
 	} catch (Throwable e) {
 	    getPlugin().getLogger().log(Level.SEVERE, "Error while stopping Packet Thread", e);
 	    e.printStackTrace();
 	}
-	getPlugin().getLogger().info("Packet thread stopped.");
+	getPlugin().getLogger()
+		.info("Packet thread stopped in " + String.valueOf(System.currentTimeMillis() - startTime) + "ms");
     }
 
     public void run() {
@@ -105,5 +140,12 @@ public class AsyncPacketThread {
      */
     public boolean isDebug() {
 	return debug;
+    }
+
+    /**
+     * @return the garbargeCleanList
+     */
+    public ArrayList<KeepAlivePacketGarbargeClean> getGarbargeCleanList() {
+	return garbargeCleanList;
     }
 }

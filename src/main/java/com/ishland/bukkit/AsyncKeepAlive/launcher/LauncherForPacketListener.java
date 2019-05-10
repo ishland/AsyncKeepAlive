@@ -22,5 +22,6 @@ public class LauncherForPacketListener {
 	    this.object = new AsyncPacketListenerFor1_12toLatest();
 	}
 	object.register(plugin, debug, packetThread, placeHolder);
+	plugin.getLogger().info("Packet listener started.");
     }
 }

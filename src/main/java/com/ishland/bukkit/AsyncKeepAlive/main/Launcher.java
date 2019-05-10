@@ -32,10 +32,12 @@ public class Launcher extends JavaPlugin {
 
     @Override
     public void onEnable() {
-	getLogger().info("AsyncKeepAlive by ishland");
+	long startTime = System.currentTimeMillis();
+	getLogger().info("AsyncKeepAlive by " + this.getDescription().getAuthors().toString());
 	loadConfig();
 	startMetric();
 	if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+	    getLogger().info("Hooked into PlaceHolderAPI");
 	    setPlaceHolder(new PlaceHolderMain());
 	    getPlaceHolder().setOrigPlugin(this);
 	    getPlaceHolder().register();
@@ -53,7 +55,8 @@ public class Launcher extends JavaPlugin {
 	this.startSendingThread();
 	this.startPacketListener();
 
-	getLogger().info("AsyncKeepAlive 0.3-SNAPSHOT is now Enabled!");
+	getLogger().info("AsyncKeepAlive " + this.getDescription().getVersion() + " enabled in "
+		+ String.valueOf(System.currentTimeMillis() - startTime) + "ms");
     }
 
     @SuppressWarnings("unchecked")
@@ -109,9 +112,14 @@ public class Launcher extends JavaPlugin {
 
     @Override
     public void onDisable() {
+	long startTime = System.currentTimeMillis();
+	getLogger().info("Removing packet listener...");
 	ProtocolLibrary.getProtocolManager().removePacketListeners(this);
+	getLogger().info("Sending signal to packet thread...");
 	getPacketThread().getObject().doStop();
-	getLogger().info("AsyncKeepAlive 0.3-SNAPSHOT is now Disabled!");
+	getLogger().info("Packet thread will stop in 1 second");
+	getLogger().info("AsyncKeepAlive " + this.getDescription().getVersion() + " is disabled in "
+		+ String.valueOf(System.currentTimeMillis() - startTime) + "ms");
     }
 
     protected void loadConfig() {
