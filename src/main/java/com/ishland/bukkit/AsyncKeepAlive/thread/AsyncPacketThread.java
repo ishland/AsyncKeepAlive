@@ -50,14 +50,16 @@ public class AsyncPacketThread {
     }
 
     private void stopGCTasks() {
-	getPlugin().getLogger().info("Stopping GC tasks...");
-	for (int i = 0; i < getGarbargeCleanList().size(); i++)
+	int size = getGarbargeCleanList().size();
+	getPlugin().getLogger().info("Stopping " + String.valueOf(size) + " GC tasks (including non-exists tasks)...");
+	for (int i = 0; i < size; i++)
 	    getGarbargeCleanList().get(i).cancel();
 	getGarbargeCleanList().clear();
     }
 
     private void cleanPackets() {
-	getPlugin().getLogger().info("Cleaning up packets...");
+	getPlugin().getLogger()
+		.info("Cleaning up " + String.valueOf(getPing().size()) + " packets (including non-exists packets)...");
 	Iterator<Entry<Long, KeepAlivePacket>> iterator = getPing().entrySet().iterator();
 	while (iterator.hasNext()) {
 	    Entry<Long, KeepAlivePacket> entry = iterator.next();
