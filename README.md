@@ -4,7 +4,7 @@
 This is a plugin that reduce the probability of disconnects
 
 # Compatibility
-- API Version: 1.13.2-R0.1-SNAPSHOT
+- API Version: 1.14-R0.1-SNAPSHOT
 - Dependencies: ProtocolLib
 - Requirements: Java 7 or above
 
@@ -38,7 +38,7 @@ This is a plugin that reduce the probability of disconnects
 - Bukkit 1.7.10 with ProtocolLib unknown by Chinese MCBBS 夜夜夜、
 
 # Known issues
-No known issues now.
+Enabling this plugin for a long time will cause "OutOfMemory" Error. (Working on it)
 
 # Development builds:
 https://ci.ishland.com/job/AsyncKeepAlive/ (Take the first jar)
