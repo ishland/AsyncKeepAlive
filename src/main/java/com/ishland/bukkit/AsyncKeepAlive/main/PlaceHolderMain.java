@@ -29,7 +29,7 @@ public class PlaceHolderMain extends PlaceholderExpansion {
 
     @Override
     public String getIdentifier() {
-	return "AsyncKeepAlive";
+	return "asynckeepalive";
     }
 
     @Override
