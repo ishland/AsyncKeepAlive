@@ -6,6 +6,7 @@ package com.ishland.bukkit.AsyncKeepAlive.main;
 import java.util.HashMap;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.plugin.Plugin;
 
 import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 
@@ -16,15 +17,28 @@ import me.clip.placeholderapi.expansion.PlaceholderExpansion;
 public class PlaceHolderMain extends PlaceholderExpansion {
 
     public HashMap<String, Long> latency = new HashMap<>();
+    private Plugin origPlugin;
 
     @Override
     public boolean canRegister() {
 	return true;
     }
 
+    /**
+     * Because this is an internal class, you must override this method to let
+     * PlaceholderAPI know to not unregister your expansion class when
+     * PlaceholderAPI is reloaded
+     *
+     * @return true to persist through reloads
+     */
+    @Override
+    public boolean persist() {
+	return true;
+    }
+
     @Override
     public String getAuthor() {
-	return "ishland";
+	return getOrigPlugin().getDescription().getAuthors().toString();
     }
 
     @Override
@@ -34,7 +48,7 @@ public class PlaceHolderMain extends PlaceholderExpansion {
 
     @Override
     public String getVersion() {
-	return "0.3-SNAPSHOT";
+	return getOrigPlugin().getDescription().getVersion();
     }
 
     /**
@@ -58,6 +72,20 @@ public class PlaceHolderMain extends PlaceholderExpansion {
 	// We return null if an invalid placeholder
 	// was provided
 	return null;
+    }
+
+    /**
+     * @return the origPlugin
+     */
+    public Plugin getOrigPlugin() {
+	return origPlugin;
+    }
+
+    /**
+     * @param origPlugin the origPlugin to set
+     */
+    public void setOrigPlugin(Plugin origPlugin) {
+	this.origPlugin = origPlugin;
     }
 
 }

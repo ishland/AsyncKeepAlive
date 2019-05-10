@@ -37,6 +37,7 @@ public class Launcher extends JavaPlugin {
 	startMetric();
 	if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
 	    setPlaceHolder(new PlaceHolderMain());
+	    getPlaceHolder().setOrigPlugin(this);
 	    getPlaceHolder().register();
 	}
 	if (Bukkit.getPluginManager().getPlugin("ProtocolLib") == null) {
