@@ -39,7 +39,7 @@ This is a plugin that reduce the probability of disconnects
 - Bukkit 1.7.10 with ProtocolLib unknown by Chinese MCBBS 夜夜夜、
 
 # Known issues
-None
+Nope
 
 # Development builds:
 https://ci.ishland.com/job/AsyncKeepAlive/ (Take the first jar)
