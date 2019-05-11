@@ -38,7 +38,7 @@ This is a plugin that reduce the probability of disconnects
 - Bukkit 1.7.10 with ProtocolLib unknown by Chinese MCBBS 夜夜夜、
 
 # Known issues
-Enabling this plugin for a long time will cause "OutOfMemory" Error. (Working on it)
+Nope
 
 # Development builds:
 https://ci.ishland.com/job/AsyncKeepAlive/ (Take the first jar)
