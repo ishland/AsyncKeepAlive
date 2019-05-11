@@ -14,6 +14,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.comphenix.protocol.ProtocolLibrary;
+import com.ishland.bukkit.AsyncKeepAlive.detection.LagDetection;
 import com.ishland.bukkit.AsyncKeepAlive.launcher.LauncherForPacketListener;
 import com.ishland.bukkit.AsyncKeepAlive.launcher.LauncherForPacketThread;
 
@@ -29,6 +30,7 @@ public class Launcher extends JavaPlugin {
     private Metrics metrics;
     private LauncherForPacketThread packetThread;
     private LauncherForPacketListener packetListener;
+    private LagDetection lagDetection;
 
     @Override
     public void onEnable() {
@@ -54,6 +56,7 @@ public class Launcher extends JavaPlugin {
 
 	this.startSendingThread();
 	this.startPacketListener();
+	this.lagDetection = new LagDetection(this);
 
 	getLogger().info("AsyncKeepAlive " + this.getDescription().getVersion() + " enabled in "
 		+ String.valueOf(System.currentTimeMillis() - startTime) + "ms");
@@ -113,11 +116,11 @@ public class Launcher extends JavaPlugin {
     @Override
     public void onDisable() {
 	long startTime = System.currentTimeMillis();
+	this.getLagDetection().stopDetection();
 	getLogger().info("Removing packet listener...");
 	ProtocolLibrary.getProtocolManager().removePacketListeners(this);
-	getLogger().info("Sending signal to packet thread...");
-	getPacketThread().getObject().doStop();
-	getLogger().info("Packet thread will stop in 1 second");
+	getLogger().info("Stopping packet thread...");
+	getPacketThread().getObject().stoploop();
 	getLogger().info("AsyncKeepAlive " + this.getDescription().getVersion() + " is disabled in "
 		+ String.valueOf(System.currentTimeMillis() - startTime) + "ms");
     }
@@ -198,6 +201,13 @@ public class Launcher extends JavaPlugin {
      */
     public void setPacketListener(LauncherForPacketListener packetListener) {
 	this.packetListener = packetListener;
+    }
+
+    /**
+     * @return the lagDetection
+     */
+    public LagDetection getLagDetection() {
+	return lagDetection;
     }
 
 }

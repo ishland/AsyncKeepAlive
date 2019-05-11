@@ -28,6 +28,7 @@ public class AsyncPacketListenerFor1_12toLatest extends AsyncPacketListener {
 			public void onPacketReceiving(PacketEvent e) {
 			    if (e.getPacketType() == PacketType.Play.Client.KEEP_ALIVE) {
 				try {
+				    long startTime = System.currentTimeMillis();
 				    PacketContainer keepAlivePacket = e.getPacket();
 				    StructureModifier<Long> packetData = keepAlivePacket.getLongs();
 				    Long packetValue = packetData.readSafely(0);
@@ -35,15 +36,18 @@ public class AsyncPacketListenerFor1_12toLatest extends AsyncPacketListener {
 					Long latency = getPacketThread().getPing().get(packetValue).getLatencyMillis();
 					if (placeHolder != null)
 					    placeHolder.latency.put(e.getPlayer().getName(), latency);
+					e.setCancelled(true);
 					if (isDebug())
 					    plugin.getLogger().info("[Debug] Got plugin-sent keepalive "
 						    + String.valueOf(packetValue) + " from " + e.getPlayer().getName()
-						    + " after " + latency.toString() + " ms");
-					e.setCancelled(true);
+						    + " after " + latency.toString() + " ms" + " (event processed in "
+						    + String.valueOf(System.currentTimeMillis() - startTime) + "ms)");
 				    } else {
 					if (isDebug())
 					    plugin.getLogger().info("[Debug] Got server-sent keepalive "
-						    + String.valueOf(packetValue) + " from " + e.getPlayer().getName());
+						    + String.valueOf(packetValue) + " from " + e.getPlayer().getName()
+						    + " (event processed in "
+						    + String.valueOf(System.currentTimeMillis() - startTime) + "ms)");
 				    }
 
 				} catch (Throwable t) {

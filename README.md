@@ -32,13 +32,14 @@ This is a plugin that reduce the probability of disconnects
 ### bStats page: https://bstats.org/plugin/bukkit/AsyncKeepAlive
 
 # Tested versions
+- Spigot 1.14
 - Paperspigot 1.13.2 with ProtocolLib 4.4.0
 - Paperspigot 1.12.2 with ProtocolLib 4.4.0
 - Paperspigot 1.11.2 with ProtocolLib 4.4.0
 - Bukkit 1.7.10 with ProtocolLib unknown by Chinese MCBBS 夜夜夜、
 
 # Known issues
-Enabling this plugin for a long time will cause "OutOfMemory" Error. (Working on it)
+None
 
 # Development builds:
 https://ci.ishland.com/job/AsyncKeepAlive/ (Take the first jar)

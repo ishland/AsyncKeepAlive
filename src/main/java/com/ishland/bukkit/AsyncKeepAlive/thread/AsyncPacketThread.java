@@ -2,6 +2,7 @@ package com.ishland.bukkit.AsyncKeepAlive.thread;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -14,23 +15,13 @@ import com.ishland.bukkit.AsyncKeepAlive.packet.KeepAlivePacketGarbargeClean;
 
 public class AsyncPacketThread {
     private Plugin plugin;
-    private boolean doStop = false;
     private boolean debug = false;
     private long frequency = 4000;
     private HashMap<Long, KeepAlivePacket> ping = new HashMap<Long, KeepAlivePacket>();
     private HashMap<Long, KeepAlivePacketGarbargeClean> garbargeCleanList = new HashMap<Long, KeepAlivePacketGarbargeClean>();
     private Timer timer = new Timer();
-    private TimerTask stopCheck = new TimerTask() {
-	public void run() {
-	    stopCheck();
-	}
-    };
     private TimerTask mainloop;
     protected Long index = (long) 0;
-
-    public void doStop() {
-	doStop = true;
-    }
 
     public void doDebug() {
 	debug = true;
@@ -42,11 +33,6 @@ public class AsyncPacketThread {
 	    return true;
 	}
 	return false;
-    }
-
-    private void stopCheck() {
-	if (doStop)
-	    stoploop();
     }
 
     private void stopGCTasks() {
@@ -81,16 +67,11 @@ public class AsyncPacketThread {
 	}
     }
 
-    private void stoploop() {
+    public void stoploop() {
 	long startTime = System.currentTimeMillis();
-	getPlugin().getLogger().info("Stopping Packet thread...");
-	getPlugin().getLogger().info("Note that if the stop task did not finish completely in time: ");
-	getPlugin().getLogger().info("If this is a shutdown, you can leave it alone");
-	getPlugin().getLogger().info("If this is a reload, it may cause extra cpu usage");
 	try {
 	    getPlugin().getLogger().info("Stopping loops...");
 	    mainloop.cancel();
-	    stopCheck.cancel();
 	    stopGCTasks();
 	    cleanPackets();
 	} catch (Throwable e) {
@@ -106,7 +87,23 @@ public class AsyncPacketThread {
 	getPlugin().getLogger().info("Packet thread started.");
 
 	timer.schedule(mainloop, 1000, this.frequency);
-	timer.schedule(stopCheck, 1000, 500);
+	timer.schedule(new TimerTask() {
+
+	    @Override
+	    public void run() {
+		// TODO Auto-generated method stub
+		System.out.println("Nothing, just a new timer");
+		Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
+		Iterator<Entry<Thread, StackTraceElement[]>> entries = map.entrySet().iterator();
+		while (entries.hasNext()) {
+		    Entry<Thread, StackTraceElement[]> entry = entries.next();
+		    Thread thr = entry.getKey();
+		    System.out.println(
+			    "Thread " + thr.getName() + "(" + thr.getId() + ") Status: " + thr.getState().toString());
+		}
+	    }
+
+	}, 10000);
     }
 
     public Plugin getPlugin() {
