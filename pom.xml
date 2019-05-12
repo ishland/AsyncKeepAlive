@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.ishland.bukkit.AsyncKeepAlive</groupId>
 	<artifactId>AsyncKeepAlive</artifactId>
-	<version>0.3</version>
+	<version>0.4-SNAPSHOT</version>
 	<repositories>
 		<repository>
 			<id>spigot-repo</id>
