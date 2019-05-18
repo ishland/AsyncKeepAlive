@@ -2,6 +2,8 @@ package com.ishland.bukkit.AsyncKeepAlive.thread;
 
 import java.util.TimerTask;
 
+import org.bukkit.Bukkit;
+
 import com.ishland.bukkit.AsyncKeepAlive.packet.KeepAlivePacket;
 import com.ishland.bukkit.AsyncKeepAlive.packet.KeepAlivePacketFor1_12toLatest;
 import com.ishland.bukkit.AsyncKeepAlive.packet.KeepAlivePacketGarbargeClean;
@@ -15,6 +17,7 @@ public class AsyncPacketThreadFor1_12toLatest extends AsyncPacketThread implemen
 		if (!getPlugin().getServer().getOnlinePlayers().isEmpty())
 		    try {
 			KeepAlivePacket packet = new KeepAlivePacketFor1_12toLatest(getPlugin());
+			count += Bukkit.getOnlinePlayers().size();
 			packet.boardcast();
 			getPing().put(packet.getBody(), packet);
 			KeepAlivePacketGarbargeClean gc = new KeepAlivePacketGarbargeClean(getPing(), packet.getBody(),

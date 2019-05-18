@@ -36,6 +36,7 @@ public class AsyncPacketListenerFor1_8to1_11 extends AsyncPacketListener {
 						    + String.valueOf(packetValue) + " from " + e.getPlayer().getName()
 						    + " after " + latency.toString() + " ms");
 					e.setCancelled(true);
+					setCount(getCount() + 1);
 				    } else {
 					if (debug)
 					    plugin.getLogger().info("[Debug] Got server-sent keepalive "

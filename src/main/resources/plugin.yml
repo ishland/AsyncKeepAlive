@@ -5,3 +5,8 @@ author: ishland
 description: AsyncKeepAlive is a plugin that keep the players' connections alive
 depend: [ProtocolLib]
 softdepend: [PlaceholderAPI]
+commands:
+  asynckeepalive:
+    description: "The main command of AsyncKeepAlive"
+    usage: "[Error] Something went wrong"
+    aliases: [ak]

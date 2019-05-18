@@ -2,7 +2,6 @@ package com.ishland.bukkit.AsyncKeepAlive.thread;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +21,7 @@ public class AsyncPacketThread {
     private Timer timer = new Timer();
     private TimerTask mainloop;
     protected Long index = (long) 0;
+    protected Long count = (long) 0;
 
     public void doDebug() {
 	debug = true;
@@ -87,23 +87,6 @@ public class AsyncPacketThread {
 	getPlugin().getLogger().info("Packet thread started.");
 
 	timer.schedule(mainloop, 1000, this.frequency);
-	timer.schedule(new TimerTask() {
-
-	    @Override
-	    public void run() {
-		// TODO Auto-generated method stub
-		System.out.println("Nothing, just a new timer");
-		Map<Thread, StackTraceElement[]> map = Thread.getAllStackTraces();
-		Iterator<Entry<Thread, StackTraceElement[]>> entries = map.entrySet().iterator();
-		while (entries.hasNext()) {
-		    Entry<Thread, StackTraceElement[]> entry = entries.next();
-		    Thread thr = entry.getKey();
-		    System.out.println(
-			    "Thread " + thr.getName() + "(" + thr.getId() + ") Status: " + thr.getState().toString());
-		}
-	    }
-
-	}, 10000);
     }
 
     public Plugin getPlugin() {
@@ -155,4 +138,19 @@ public class AsyncPacketThread {
     public HashMap<Long, KeepAlivePacketGarbargeClean> getGarbargeCleanList() {
 	return garbargeCleanList;
     }
+
+    /**
+     * @return the index
+     */
+    public long getIndex() {
+	return index;
+    }
+
+    /**
+     * @return the index
+     */
+    public long getCount() {
+	return count;
+    }
+
 }

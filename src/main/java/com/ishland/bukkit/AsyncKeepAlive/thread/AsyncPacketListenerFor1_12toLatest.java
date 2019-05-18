@@ -37,6 +37,7 @@ public class AsyncPacketListenerFor1_12toLatest extends AsyncPacketListener {
 					if (placeHolder != null)
 					    placeHolder.latency.put(e.getPlayer().getName(), latency);
 					e.setCancelled(true);
+					setCount(getCount() + 1);
 					if (isDebug())
 					    plugin.getLogger().info("[Debug] Got plugin-sent keepalive "
 						    + String.valueOf(packetValue) + " from " + e.getPlayer().getName()

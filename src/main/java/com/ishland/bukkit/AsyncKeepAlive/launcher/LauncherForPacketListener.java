@@ -24,4 +24,8 @@ public class LauncherForPacketListener {
 	object.register(plugin, debug, packetThread, placeHolder);
 	plugin.getLogger().info("Packet listener started.");
     }
+
+    public AsyncPacketListener getObject() {
+	return this.object;
+    }
 }
