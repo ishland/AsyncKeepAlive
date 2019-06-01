@@ -41,19 +41,25 @@ public class Command_asynckeepalive_Handler implements CommandExecutor {
     }
 
     protected String[] getStatus(CommandSender sender) {
-	String returnval[] = { "Status: ",
-		"Received packets / Sent packets: "
-			+ String.valueOf(((Launcher) getPlugin()).getPacketListener().getObject().getCount()) + " / "
-			+ String.valueOf(((Launcher) getPlugin()).getPacketThread().getObject().getCount()),
-		"Packet loss: " + (((Launcher) getPlugin()).getPacketListener().getObject().getCount() > 1
-			? String.valueOf(100L - ((Launcher) getPlugin()).getPacketListener().getObject().getCount()
-				/ ((Launcher) getPlugin()).getPacketListener().getObject().getCount() * 100)
-			: "0") + "%",
-		"GC tasks: " + String
-			.valueOf(((Launcher) getPlugin()).getPacketThread().getObject().getGarbargeCleanList().size()),
-		"Packets in database: "
-			+ String.valueOf(((Launcher) getPlugin()).getPacketThread().getObject().getPing().size()) };
-	return returnval;
+	try {
+	    String returnval[] = { "Status: ",
+		    "Received packets / Sent packets: "
+			    + String.valueOf(((Launcher) getPlugin()).getPacketListener().getObject().getCount())
+			    + " / " + String.valueOf(((Launcher) getPlugin()).getPacketThread().getObject().getCount()),
+		    "Packet loss: "
+			    + (String.valueOf(100L - ((Launcher) getPlugin()).getPacketListener().getObject().getCount()
+				    / ((Launcher) getPlugin()).getPacketListener().getObject().getCount() * 100))
+			    + "%",
+		    "GC tasks: " + String.valueOf(
+			    ((Launcher) getPlugin()).getPacketThread().getObject().getGarbargeCleanList().size()),
+		    "Packets in database: "
+			    + String.valueOf(((Launcher) getPlugin()).getPacketThread().getObject().getPing().size()) };
+	    return returnval;
+	} catch (ArithmeticException e) {
+	    String returnval[] = {
+		    "There is currently no statistics. Let some players join the server and see again." };
+	    return returnval;
+	}
     }
 
     /**
