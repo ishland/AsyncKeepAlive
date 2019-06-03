@@ -24,17 +24,6 @@
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
 		<!-- Bukkit end -->
-		<!-- Sponge start -->
-		<repository>
-			<id>sponge-repo</id>
-			<name>Sponge Maven Repository</name>
-			<url>https://repo.spongepowered.org/maven</url>
-		</repository>
-		<repository>
-			<id>jitpack.io</id>
-			<url>https://jitpack.io</url>
-		</repository>
-		<!-- Sponge end -->
 	</repositories>
 	<dependencies>
 		<!-- Bukkit start -->
@@ -73,28 +62,6 @@
 			<version>4.4.0</version>
 		</dependency>
 		<!-- Bukkit end -->
-		<!-- Sponge start -->
-		<!-- Sponge API -->
-		<dependency>
-			<groupId>org.spongepowered</groupId>
-			<artifactId>spongeapi</artifactId>
-			<version>7.1.0</version>
-			<type>jar</type>
-			<scope>provided</scope>
-		</dependency>
-		<!-- Sponge Packet API -->
-		<dependency>
-			<groupId>net.year4000.utilities</groupId>
-			<artifactId>sponge</artifactId>
-			<version>master-SNAPSHOT</version>
-		</dependency>
-		<!-- Metrics -->
-		<dependency>
-			<groupId>org.bstats</groupId>
-			<artifactId>bstats-sponge</artifactId>
-			<version>1.4</version>
-		</dependency>
-		<!-- Sponge end -->
 	</dependencies>
 	<build>
 		<plugins>
@@ -115,7 +82,6 @@
 					<artifactSet>
 						<includes>
 							<include>org.bstats:bstats-bukkit</include>
-							<include>org.bstats:bstats-sponge</include>
 						</includes>
 					</artifactSet>
 					<filters>
