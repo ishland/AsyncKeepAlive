@@ -6,6 +6,7 @@
 	<artifactId>AsyncKeepAlive</artifactId>
 	<version>0.4-SNAPSHOT</version>
 	<repositories>
+		<!-- Bukkit start -->
 		<repository>
 			<id>spigot-repo</id>
 			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots</url>
@@ -22,8 +23,21 @@
 			<id>placeholderapi-repo</id>
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
+		<!-- Bukkit end -->
+		<!-- Sponge start -->
+		<repository>
+			<id>sponge-repo</id>
+			<name>Sponge Maven Repository</name>
+			<url>https://repo.spongepowered.org/maven</url>
+		</repository>
+		<repository>
+			<id>jitpack.io</id>
+			<url>https://jitpack.io</url>
+		</repository>
+		<!-- Sponge end -->
 	</repositories>
 	<dependencies>
+		<!-- Bukkit start -->
 		<!-- Spigot API -->
 		<dependency>
 			<groupId>org.spigotmc</groupId>
@@ -37,7 +51,6 @@
 			<artifactId>bstats-bukkit</artifactId>
 			<version>1.4</version>
 		</dependency>
-
 		<!-- Placeholders -->
 		<dependency>
 			<groupId>me.clip</groupId>
@@ -53,11 +66,35 @@
 			<artifactId>org.eclipse.jdt.annotation</artifactId>
 			<version>2.2.200</version>
 		</dependency>
+		<!-- ProtocolLib -->
 		<dependency>
 			<groupId>com.comphenix.protocol</groupId>
 			<artifactId>ProtocolLib</artifactId>
 			<version>4.4.0</version>
 		</dependency>
+		<!-- Bukkit end -->
+		<!-- Sponge start -->
+		<!-- Sponge API -->
+		<dependency>
+			<groupId>org.spongepowered</groupId>
+			<artifactId>spongeapi</artifactId>
+			<version>7.1.0</version>
+			<type>jar</type>
+			<scope>provided</scope>
+		</dependency>
+		<!-- Sponge Packet API -->
+		<dependency>
+			<groupId>net.year4000.utilities</groupId>
+			<artifactId>sponge</artifactId>
+			<version>master-SNAPSHOT</version>
+		</dependency>
+		<!-- Metrics -->
+		<dependency>
+			<groupId>org.bstats</groupId>
+			<artifactId>bstats-sponge</artifactId>
+			<version>1.4</version>
+		</dependency>
+		<!-- Sponge end -->
 	</dependencies>
 	<build>
 		<plugins>
@@ -66,8 +103,8 @@
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>3.8.0</version>
 				<configuration>
-					<source>1.7</source>
-					<target>1.7</target>
+					<source>1.8</source>
+					<target>1.8</target>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -75,15 +112,10 @@
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.1.0</version>
 				<configuration>
-					<relocations>
-						<relocation>
-							<pattern>org.bstats</pattern>
-							<shadedPattern>com.ishland.bukkit.AsyncKeepAlive.main</shadedPattern>
-						</relocation>
-					</relocations>
 					<artifactSet>
 						<includes>
 							<include>org.bstats:bstats-bukkit</include>
+							<include>org.bstats:bstats-sponge</include>
 						</includes>
 					</artifactSet>
 					<filters>

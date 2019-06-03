@@ -35,7 +35,7 @@ public class KeepAlivePacket {
 	super.finalize();
     }
 
-    public void boardcast() throws Exception {
+    public void boardcast() throws IllegalAccessException {
 	if (this.state == 0) {
 	    try {
 		ProtocolLibrary.getProtocolManager().broadcastServerPacket(getKeepAlivePacket());
