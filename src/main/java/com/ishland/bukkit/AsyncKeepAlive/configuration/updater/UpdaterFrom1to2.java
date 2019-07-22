@@ -12,6 +12,9 @@ import org.bukkit.configuration.file.FileConfiguration;
 public class UpdaterFrom1to2 {
     public static void update(FileConfiguration config) {
 	config.set("version", 2);
-	config.set("enableFreezeDetection", true);
+	config.set("updater.enable", true);
+	config.set("updater.autodownload", true);
+	config.set("updater.forceSnapshot", false);
+	config.set("updater.forceRelease", false);
     }
 }

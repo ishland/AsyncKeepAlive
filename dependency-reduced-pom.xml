@@ -26,10 +26,16 @@
           </execution>
         </executions>
         <configuration>
+          <relocations>
+            <relocation>
+              <pattern>org.bstats</pattern>
+              <shadedPattern>com.ishland.bukkit.AsyncKeepAlive.main</shadedPattern>
+            </relocation>
+          </relocations>
           <artifactSet>
             <includes>
               <include>org.bstats:bstats-bukkit</include>
-              <include>org.bstats:bstats-sponge</include>
+              <include>org.inventivetalent.spiget-update:bukkit</include>
             </includes>
           </artifactSet>
           <filters>
@@ -62,13 +68,8 @@
       <url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
     </repository>
     <repository>
-      <id>sponge-repo</id>
-      <name>Sponge Maven Repository</name>
-      <url>https://repo.spongepowered.org/maven</url>
-    </repository>
-    <repository>
-      <id>jitpack.io</id>
-      <url>https://jitpack.io</url>
+      <id>inventive-repo</id>
+      <url>https://repo.inventivetalent.org/content/groups/public/</url>
     </repository>
   </repositories>
   <dependencies>
@@ -79,16 +80,8 @@
       <scope>provided</scope>
       <exclusions>
         <exclusion>
-          <artifactId>commons-lang</artifactId>
-          <groupId>commons-lang</groupId>
-        </exclusion>
-        <exclusion>
           <artifactId>bungeecord-chat</artifactId>
           <groupId>net.md-5</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>snakeyaml</artifactId>
-          <groupId>org.yaml</groupId>
         </exclusion>
       </exclusions>
     </dependency>
@@ -108,68 +101,6 @@
       <groupId>com.comphenix.protocol</groupId>
       <artifactId>ProtocolLib</artifactId>
       <version>4.4.0</version>
-      <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.spongepowered</groupId>
-      <artifactId>spongeapi</artifactId>
-      <version>7.1.0</version>
-      <scope>provided</scope>
-      <exclusions>
-        <exclusion>
-          <artifactId>error_prone_annotations</artifactId>
-          <groupId>com.google.errorprone</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>commons-lang3</artifactId>
-          <groupId>org.apache.commons</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>jsr305</artifactId>
-          <groupId>com.google.code.findbugs</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>caffeine</artifactId>
-          <groupId>com.github.ben-manes.caffeine</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>guava</artifactId>
-          <groupId>com.github.ben-manes.caffeine</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>plugin-meta</artifactId>
-          <groupId>org.spongepowered</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>configurate-hocon</artifactId>
-          <groupId>org.spongepowered</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>configurate-gson</artifactId>
-          <groupId>org.spongepowered</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>configurate-yaml</artifactId>
-          <groupId>org.spongepowered</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>flow-math</artifactId>
-          <groupId>com.flowpowered</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>flow-noise</artifactId>
-          <groupId>com.flowpowered</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>asm</artifactId>
-          <groupId>org.ow2.asm</groupId>
-        </exclusion>
-      </exclusions>
-    </dependency>
-    <dependency>
-      <groupId>net.year4000.utilities</groupId>
-      <artifactId>sponge</artifactId>
-      <version>master-SNAPSHOT</version>
       <scope>compile</scope>
     </dependency>
   </dependencies>

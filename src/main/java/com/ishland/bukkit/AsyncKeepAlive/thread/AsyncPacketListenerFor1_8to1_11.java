@@ -28,7 +28,15 @@ public class AsyncPacketListenerFor1_8to1_11 extends AsyncPacketListener {
 				    Integer packetValue = packetData.readSafely(0);
 				    if (packetThread.getPing().containsKey(Long.valueOf(packetValue))) {
 					Long latency = packetThread.getPing().get(Long.valueOf(packetValue))
-						.getLatencyMillis();
+						.getPlayerPing(e.getPlayer());
+					if (latency.longValue() == -1) {
+					    if (debug)
+						plugin.getLogger()
+							.info("[Debug] Got server-sent keepalive "
+								+ String.valueOf(packetValue) + " from "
+								+ e.getPlayer().getName());
+					    return;
+					}
 					if (placeHolder != null)
 					    placeHolder.latency.put(e.getPlayer().getName(), latency);
 					if (debug)

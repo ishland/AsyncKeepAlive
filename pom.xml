@@ -23,6 +23,10 @@
 			<id>placeholderapi-repo</id>
 			<url>http://repo.extendedclip.com/content/repositories/placeholderapi/</url>
 		</repository>
+		<repository>
+			<id>inventive-repo</id>
+			<url>https://repo.inventivetalent.org/content/groups/public/</url>
+		</repository>
 		<!-- Bukkit end -->
 	</repositories>
 	<dependencies>
@@ -61,6 +65,11 @@
 			<artifactId>ProtocolLib</artifactId>
 			<version>4.4.0</version>
 		</dependency>
+		<dependency>
+			<groupId>org.inventivetalent.spiget-update</groupId>
+			<artifactId>bukkit</artifactId>
+			<version>1.4.2-SNAPSHOT</version>
+		</dependency>
 		<!-- Bukkit end -->
 	</dependencies>
 	<build>
@@ -79,9 +88,16 @@
 				<artifactId>maven-shade-plugin</artifactId>
 				<version>3.1.0</version>
 				<configuration>
+					<relocations>
+						<relocation>
+							<pattern>org.bstats</pattern>
+							<shadedPattern>com.ishland.bukkit.AsyncKeepAlive.main</shadedPattern>
+						</relocation>
+					</relocations>
 					<artifactSet>
 						<includes>
 							<include>org.bstats:bstats-bukkit</include>
+							<include>org.inventivetalent.spiget-update:bukkit</include>
 						</includes>
 					</artifactSet>
 					<filters>

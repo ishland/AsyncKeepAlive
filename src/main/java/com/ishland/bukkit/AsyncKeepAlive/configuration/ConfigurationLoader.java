@@ -16,7 +16,7 @@ public class ConfigurationLoader {
 	getPlugin().getLogger().info("Loading configurations...");
 	getPlugin().saveDefaultConfig();
 	setConfiguration(getPlugin().getConfig());
-	if (getConfiguration().getInt("version") != VERSION) {
+	if (getConfiguration().getInt("version") < VERSION) {
 	    getPlugin().getLogger().info("Updating your configuration file...");
 	    com.ishland.bukkit.AsyncKeepAlive.configuration.updater.UpdaterFrom1to2.update(getConfiguration());
 	    getPlugin().saveConfig();

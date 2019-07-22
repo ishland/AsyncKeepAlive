@@ -33,7 +33,18 @@ public class AsyncPacketListenerFor1_12toLatest extends AsyncPacketListener {
 				    StructureModifier<Long> packetData = keepAlivePacket.getLongs();
 				    Long packetValue = packetData.readSafely(0);
 				    if (getPacketThread().getPing().get(packetValue) != null) {
-					Long latency = getPacketThread().getPing().get(packetValue).getLatencyMillis();
+					Long latency = getPacketThread().getPing().get(packetValue)
+						.getPlayerPing(e.getPlayer());
+					if (latency.longValue() == -1) {
+					    if (isDebug())
+						plugin.getLogger()
+							.info("[Debug] Got server-sent keepalive "
+								+ String.valueOf(packetValue) + " from "
+								+ e.getPlayer().getName() + " (event processed in "
+								+ String.valueOf(System.currentTimeMillis() - startTime)
+								+ "ms)");
+					    return;
+					}
 					if (placeHolder != null)
 					    placeHolder.latency.put(e.getPlayer().getName(), latency);
 					e.setCancelled(true);

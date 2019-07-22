@@ -3,8 +3,10 @@
  */
 package com.ishland.bukkit.AsyncKeepAlive.packet;
 
+import java.util.ArrayList;
 import java.util.logging.Level;
 
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 import com.comphenix.protocol.PacketType;
@@ -20,6 +22,7 @@ public class KeepAlivePacket {
     protected Plugin plugin;
     protected byte state = -1;
     protected PacketContainer keepAlivePacket;
+    protected ArrayList<Player> checkedPlayers = new ArrayList<Player>();
 
     protected long sendTime;
 
@@ -54,6 +57,15 @@ public class KeepAlivePacket {
 	    return System.currentTimeMillis() - this.sendTime;
 
 	return -1;
+    }
+
+    public long getPlayerPing(Player player) {
+	if (this.state == 1)
+	    return -1;
+	if (checkedPlayers.contains(player))
+	    return -1;
+	checkedPlayers.add(player);
+	return getLatencyMillis();
     }
 
     /**

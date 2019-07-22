@@ -17,6 +17,7 @@ import com.comphenix.protocol.ProtocolLibrary;
 import com.ishland.bukkit.AsyncKeepAlive.command.CommandHandler;
 import com.ishland.bukkit.AsyncKeepAlive.launcher.LauncherForPacketListener;
 import com.ishland.bukkit.AsyncKeepAlive.launcher.LauncherForPacketThread;
+import com.ishland.bukkit.AsyncKeepAlive.updater.Updater;
 
 /**
  * @author ishland
@@ -30,6 +31,7 @@ public class Launcher extends JavaPlugin {
     private Metrics metrics;
     private LauncherForPacketThread packetThread;
     private LauncherForPacketListener packetListener;
+    private Updater updater;
 
     @Override
     public void onEnable() {
@@ -55,9 +57,14 @@ public class Launcher extends JavaPlugin {
 
 	this.startSendingThread();
 	this.startPacketListener();
+	startUpdater();
 	new CommandHandler(this);
 	getLogger().info("AsyncKeepAlive " + this.getDescription().getVersion() + " enabled in "
 		+ String.valueOf(System.currentTimeMillis() - startTime) + "ms");
+    }
+
+    protected void startUpdater() {
+	this.updater = new Updater(this);
     }
 
     @SuppressWarnings("unchecked")

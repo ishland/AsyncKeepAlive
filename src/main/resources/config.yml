@@ -1,5 +1,11 @@
-version: 1
+version: 2
 # Using debug mode
 debug: false
 # KeepAlive frequency in miliseconds, it must be at least 1
 frequency: 4000
+# Updater config
+updater:
+  # Enable
+  enable: true
+  # Download the update automatically
+  autodownload: true
