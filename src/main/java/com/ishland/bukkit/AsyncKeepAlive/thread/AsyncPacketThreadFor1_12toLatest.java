@@ -26,7 +26,8 @@ public class AsyncPacketThreadFor1_12toLatest extends AsyncPacketThread implemen
 			getGarbargeCleanList().put(index, gc);
 			index++;
 			if (isDebug())
-			    getPlugin().getLogger().info("[Debug] Boardcasted plugin-sent keepalive");
+			    getPlugin().getLogger()
+				    .info("[Debug] Boardcasted plugin-sent keepalive " + packet.getBody());
 		    } catch (Throwable t) {
 			t.printStackTrace();
 		    }

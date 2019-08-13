@@ -32,7 +32,7 @@ public class AsyncPacketListenerFor1_12toLatest extends AsyncPacketListener {
 				    PacketContainer keepAlivePacket = e.getPacket();
 				    StructureModifier<Long> packetData = keepAlivePacket.getLongs();
 				    Long packetValue = packetData.readSafely(0);
-				    if (getPacketThread().getPing().get(packetValue) != null) {
+				    if (getPacketThread().getPing().get(packetValue.longValue()) != null) {
 					Long latency = getPacketThread().getPing().get(packetValue)
 						.getPlayerPing(e.getPlayer());
 					if (latency.longValue() == -1) {

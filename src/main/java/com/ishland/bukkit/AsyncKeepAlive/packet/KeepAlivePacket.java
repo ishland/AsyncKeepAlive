@@ -22,7 +22,7 @@ public class KeepAlivePacket {
     protected Plugin plugin;
     protected byte state = -1;
     protected PacketContainer keepAlivePacket;
-    protected ArrayList<Player> checkedPlayers = new ArrayList<Player>();
+    protected ArrayList<Integer> checkedPlayers = new ArrayList<Integer>();
 
     protected long sendTime;
 
@@ -31,6 +31,7 @@ public class KeepAlivePacket {
 	this.keepAlivePacket = ProtocolLibrary.getProtocolManager().createPacket(PacketType.Play.Server.KEEP_ALIVE);
 	this.plugin = plugin;
 	this.state = 0;
+	this.checkedPlayers.clear();
     }
 
     @Override
@@ -60,11 +61,11 @@ public class KeepAlivePacket {
     }
 
     public long getPlayerPing(Player player) {
-	if (this.state == 1)
+	if (this.state != 1)
 	    return -1;
-	if (checkedPlayers.contains(player))
+	if (checkedPlayers.contains(player.hashCode()))
 	    return -1;
-	checkedPlayers.add(player);
+	checkedPlayers.add(player.hashCode());
 	return getLatencyMillis();
     }
 
