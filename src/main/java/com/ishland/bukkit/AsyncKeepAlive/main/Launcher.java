@@ -59,6 +59,7 @@ public class Launcher extends JavaPlugin {
 	this.startPacketListener();
 	startUpdater();
 	new CommandHandler(this);
+	Bukkit.getPluginManager().registerEvents(new EventListener(this), this);
 	getLogger().info("AsyncKeepAlive " + this.getDescription().getVersion() + " enabled in "
 		+ String.valueOf(System.currentTimeMillis() - startTime) + "ms");
     }
