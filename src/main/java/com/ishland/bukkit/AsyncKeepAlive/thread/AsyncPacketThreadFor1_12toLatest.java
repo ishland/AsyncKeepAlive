@@ -18,10 +18,13 @@ public class AsyncPacketThreadFor1_12toLatest extends AsyncPacketThread implemen
 		    try {
 			KeepAlivePacket packet = new KeepAlivePacketFor1_12toLatest(getPlugin());
 			count += Bukkit.getOnlinePlayers().size();
+			packet.expectedCount = Bukkit.getOnlinePlayers().size();
+			packet.receivedCount = 0;
+			sentPackets.add(packet.getBody());
 			packet.boardcast();
 			getPing().put(packet.getBody(), packet);
 			KeepAlivePacketGarbargeClean gc = new KeepAlivePacketGarbargeClean(getPing(), packet.getBody(),
-				getGarbargeCleanList(), index);
+				getGarbargeCleanList(), index, sentPackets);
 			getTimer().schedule(gc, 60 * 1000);
 			getGarbargeCleanList().put(index, gc);
 			index++;

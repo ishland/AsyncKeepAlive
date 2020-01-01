@@ -1,7 +1,9 @@
 package com.ishland.bukkit.AsyncKeepAlive.thread;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map.Entry;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -22,6 +24,7 @@ public class AsyncPacketThread {
     private TimerTask mainloop;
     protected Long index = (long) 0;
     protected Long count = (long) 0;
+    protected List<Long> sentPackets = new ArrayList<>();
 
     public void doDebug() {
 	debug = true;
@@ -151,6 +154,10 @@ public class AsyncPacketThread {
      */
     public long getCount() {
 	return count;
+    }
+
+    public List<Long> getSentPackets() {
+	return sentPackets;
     }
 
 }

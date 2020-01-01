@@ -1,5 +1,6 @@
 package com.ishland.bukkit.AsyncKeepAlive.thread;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import com.comphenix.protocol.PacketType;
@@ -10,6 +11,7 @@ import com.comphenix.protocol.events.PacketContainer;
 import com.comphenix.protocol.events.PacketEvent;
 import com.comphenix.protocol.reflect.StructureModifier;
 import com.ishland.bukkit.AsyncKeepAlive.main.PlaceHolderMain;
+import com.ishland.bukkit.AsyncKeepAlive.packet.KeepAlivePacket;
 
 public class AsyncPacketListenerFor1_12toLatest extends AsyncPacketListener {
     private boolean debug;
@@ -32,10 +34,11 @@ public class AsyncPacketListenerFor1_12toLatest extends AsyncPacketListener {
 				    PacketContainer keepAlivePacket = e.getPacket();
 				    StructureModifier<Long> packetData = keepAlivePacket.getLongs();
 				    Long packetValue = packetData.readSafely(0);
-				    if (getPacketThread().getPing().get(packetValue.longValue()) != null) {
-					Long latency = getPacketThread().getPing().get(packetValue)
-						.getPlayerPing(e.getPlayer());
+				    KeepAlivePacket packetobj = getPacketThread().getPing().get(packetValue);
+				    if (packetobj != null) {
+					Long latency = packetobj.getPlayerPing(e.getPlayer());
 					if (latency.longValue() == -1) {
+					    packetobj.receivedCount++;
 					    if (isDebug())
 						plugin.getLogger()
 							.info("[Debug] Got server-sent keepalive "
@@ -55,6 +58,12 @@ public class AsyncPacketListenerFor1_12toLatest extends AsyncPacketListener {
 						    + " after " + latency.toString() + " ms" + " (event processed in "
 						    + String.valueOf(System.currentTimeMillis() - startTime) + "ms)");
 				    } else {
+					if (packetThread.sentPackets.contains(Long.valueOf(packetValue))) {
+					    Bukkit.getScheduler().runTaskLater(getPlugin(),
+						    () -> e.getPlayer().kickPlayer("[AsyncKeepAlive] Timed out"), 0);
+					    packetThread.sentPackets.remove(Long.valueOf(packetValue));
+					    return;
+					}
 					if (isDebug())
 					    plugin.getLogger().info("[Debug] Got server-sent keepalive "
 						    + String.valueOf(packetValue) + " from " + e.getPlayer().getName()

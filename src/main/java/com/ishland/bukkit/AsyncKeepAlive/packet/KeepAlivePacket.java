@@ -23,6 +23,8 @@ public class KeepAlivePacket {
     protected byte state = -1;
     protected PacketContainer keepAlivePacket;
     protected ArrayList<Integer> checkedPlayers = new ArrayList<Integer>();
+    public int expectedCount = -1;
+    public int receivedCount = -1;
 
     protected long sendTime;
 
