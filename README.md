@@ -3,6 +3,8 @@
 
 This is a plugin that reduce the probability of disconnects
 
+Warning: This plugin is currently not stable. I didn't update it due to lack to time.
+
 # Compatibility
 - API Version: 1.14-R0.1-SNAPSHOT
 - Dependencies: ProtocolLib
