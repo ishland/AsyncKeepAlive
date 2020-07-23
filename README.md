@@ -1,3 +1,8 @@
+# The future of AsyncKeepAlive
+In 1.16, Paper has made a lot of changes to networking that caused this plugin is NOT working properly. And there is NO way to make it work properly again. Fixing these things isn't easy or fun and takes a lot of time and energy that I don't have. 
+I have no plans to continue updating AsyncKeepAlive and no alternatives is present. 
+AsyncKeepAlive will still works just fine from 1.7 to 1.11. I have no plans to continue fixing inconsistencies on 1.12+. 
+
 # AsyncKeepAlive
 [![Build Status](https://ci.ishland.com/job/AsyncKeepAlive/badge/icon)](https://ci.ishland.com/job/AsyncKeepAlive/)
 
